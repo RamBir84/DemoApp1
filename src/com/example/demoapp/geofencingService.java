@@ -103,11 +103,13 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		// Toast
 		// Toast.makeText(this, "Service Connected", Toast.LENGTH_SHORT).show();
 		
+/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
 		// update user location
 		userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
 		
 		// update the distance between userLocation and geoLocation
 		distance = userLocation.distanceTo(geoLocation);
+/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
 		
 	 /* start listening to location updates this is suitable for foreground listening, with the onLocationChanged() invoked for location updates */
 	    LocationRequest locationRequest = LocationRequest.create()
