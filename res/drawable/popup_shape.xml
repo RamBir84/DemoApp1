@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:drawable="@drawable/bg_popup"/>
+    <item>
+		<shape>
+			<stroke 
+				android:width="3dip" 
+				android:color="@color/grey_popup_border" /> 
+			<padding 
+				android:left="7dip" 
+				android:top="7dip" 
+				android:right="7dip" 
+				android:bottom="7dip" /> 
+		</shape>
+	</item>
+</layer-list>
+
+

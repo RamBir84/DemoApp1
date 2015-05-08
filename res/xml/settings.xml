@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Waldo Settings" >
+        <CheckBoxPreference
+            android:key="settings_invisible"
+            android:defaultValue="false"
+            android:summary="Be Invisible To Your Friends"
+            android:title="Invisible" >
+        </CheckBoxPreference>
+
+           <ListPreference
+            android:key="settings_chenge_school"
+            android:entries="@array/schools"
+            android:entryValues="@array/updateFrequencyValues"
+            android:summary="This Action Will Change Your Contact List"
+            android:title="Change School" />
+           
+           <Preference
+               android:key="settings_about"
+               android:title="About" />
+    </PreferenceCategory>
+</PreferenceScreen>

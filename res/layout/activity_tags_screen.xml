@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tagScreenFrame"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:foreground="@drawable/bg_blur"
+    android:orientation="vertical"
+    android:weightSum="100" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="10.59"
+            android:background="@color/white"
+            android:orientation="horizontal" >
+
+            <!-- Separation1 -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="0.05"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <!-- menu button -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="0.15"
+                android:gravity="center"
+                android:orientation="vertical" >
+                <!-- android:onClick="onClickTagMenu" -->
+
+                <ImageView
+                    android:id="@+id/tag_menu_button"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/icon_bg"
+                    android:src="@color/white" />
+            </LinearLayout>
+
+            <!-- logo -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_waldo_logo" />
+            </LinearLayout>
+
+            <!-- add button -->
+
+            <LinearLayout
+                android:id="@+id/tag_search_button_layout"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="0.15"
+                android:gravity="right|center"
+                android:onClick="onClickAdd"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/tag_search_button"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/icon_bg"
+                    android:src="@drawable/ic_add_button" />
+            </LinearLayout>
+
+            <!-- Separation2 -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="0.05"
+                android:orientation="vertical" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="89.74"
+            android:background="@drawable/bcg_screen_color"
+            android:orientation="vertical"
+            android:weightSum="100" >
+
+            <!-- Text box(where are you?) -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_weight="50"
+                android:background="@color/transparent"
+                android:gravity="center|left"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0px"
+                    android:layout_weight="8"
+                    android:gravity="center"
+                    android:text="Where Are You?"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Tags list -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_weight="50"
+                android:background="@color/transparent"
+                android:gravity="center|left"
+                android:orientation="vertical" >
+
+                <ListView
+                    android:id="@+id/mainTagContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/transparent"
+                    android:cacheColorHint="@color/soft_white"
+                    android:divider="@color/transparent"
+                    android:dividerHeight="5dp"
+                    android:listSelector="@color/transparent"
+                    android:orientation="vertical" >
+                </ListView>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

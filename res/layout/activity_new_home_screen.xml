@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/newScreenFrame"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:foreground="@drawable/bg_blur"
+    android:orientation="vertical"
+    android:weightSum="100" >
+
+    <LinearLayout
+        android:id="@+id/mainSearchMode"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:weightSum="100" >
+
+        <!-- Top bar in search mode -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="10.59"
+            android:orientation="horizontal"
+            android:weightSum="100" >
+
+            <!-- Small logo -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="25"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_waldo_logo" />
+            </LinearLayout>
+
+            <!-- Search box -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="60"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <EditText
+                    android:id="@+id/searchBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:hint="Search" >
+                </EditText>
+            </LinearLayout>
+
+            <!-- Search cancel button -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="15"
+                android:gravity="center"
+                android:onClick="onClickExitSearch"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/exit_search_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/icon_bg"
+                    android:duplicateParentState="true"
+                    android:src="@drawable/ic_exit_button" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/newScreenLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="100" >
+
+        <!-- Top bar -->
+
+        <LinearLayout
+            android:id="@+id/topBarMain"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="10.59"
+            android:background="@color/white"
+            android:orientation="horizontal" >
+
+            <!-- Separation1 -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="0.05"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <!-- menu button -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="0.15"
+                android:gravity="center_vertical"
+                android:orientation="vertical" >
+                <!-- android:onClick="onClickMenu" -->
+                
+
+                <ImageView
+                    android:id="@+id/menu_button"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/icon_bg"
+                    android:duplicateParentState="true"
+                    android:src="@color/white" />
+            </LinearLayout>
+
+            <!-- logo -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:layout_width="140dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_waldo_logo" />
+            </LinearLayout>
+
+            <!-- search button -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="0.15"
+                android:gravity="right|center"
+                android:onClick="onClickSearch"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/search_button"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/icon_bg"
+                    android:duplicateParentState="true"
+                    android:src="@drawable/ic_search_button" />
+            </LinearLayout>
+
+            <!-- Separation2 -->
+
+            <LinearLayout
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="0.05"
+                android:orientation="vertical" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="89.74"
+            android:background="@drawable/bcg_screen_color"
+            android:gravity="center|bottom"
+            android:orientation="vertical"
+            android:weightSum="100" >
+
+            <ListView
+                android:id="@+id/mainContainer"
+                android:layout_width="330dp"
+                android:layout_height="0px"
+                android:layout_weight="97"
+                android:background="@color/transparent"
+                android:cacheColorHint="@color/soft_white"
+                android:divider="@color/transparent"
+                android:dividerHeight="5dp"
+                android:listSelector="@color/transparent"
+                android:orientation="vertical" >
+            </ListView>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

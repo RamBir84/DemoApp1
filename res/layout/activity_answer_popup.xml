@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/popup_element"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/popup_shape"
+    android:orientation="vertical"
+    android:weightSum="100" >
+
+    <!-- Contact information -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="47"
+        android:orientation="horizontal"
+        android:weightSum="100" >
+
+        <!-- profile picture -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="63"
+            android:orientation="vertical"
+            android:weightSum="100" >
+
+            <com.example.demoapp.infrastructure.CircleImageView
+                android:id="@+id/answer_profile_picture"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                app:border_color="@color/white"
+                app:border_width="2dp" />
+        </LinearLayout>
+
+        <!-- name and date -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="37"
+            android:background="@color/transparent"
+            android:orientation="vertical"
+            android:weightSum="100" >
+
+            <!-- name -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="50"
+                android:background="@color/transparent"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/answer_contact_name"
+                    style="@style/listHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="10sp"
+                    android:text="contact name"
+                    android:textColor="@color/grey_popup_text"
+                    android:textSize="23sp" />
+            </LinearLayout>
+
+            <!-- Contact status (online/offline) -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="50"
+                android:background="@color/transparent"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/answer_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginTop="10sp"
+                    android:text="contact status"
+                    android:textColor="@color/grey_popup_text"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- seperation -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="10"
+        android:background="@color/transparent"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="4"
+        android:background="@color/blue"
+        android:orientation="horizontal" >
+    </LinearLayout>
+
+    <!-- Location information -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="30"
+        android:background="@color/transparent"
+        android:orientation="horizontal"
+        android:weightSum="100" >
+
+        <!-- Location symbol -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="80"
+            android:background="@color/transparent"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="100"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_location_symbol" />
+        </LinearLayout>
+
+        <!-- Location message and time -->
+
+        <LinearLayout
+            android:layout_width="350sp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_weight="20"
+            android:background="@color/transparent"
+            android:orientation="vertical" >
+
+            <!-- location message -->
+
+            <TextView
+                android:id="@+id/answer_location"
+                style="@style/listHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This is a location message"
+                android:textColor="@color/grey_popup_text"
+                android:textSize="20sp" />
+            <!-- Locatin time -->
+
+            <TextView
+                android:id="@+id/answer_location_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2sp"
+                android:text="Date and Time"
+                android:textColor="@color/grey_popup_text"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Exit button -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="9"
+        android:background="@color/transparent"
+        android:orientation="vertical" >
+
+        <ImageButton
+            android:id="@+id/btn_close_popup"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20sp"
+            android:orientation="horizontal"
+            android:src="@drawable/ic_got_it" />
+    </LinearLayout>
+
+</LinearLayout>

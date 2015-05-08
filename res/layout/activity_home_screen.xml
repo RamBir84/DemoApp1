@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical"
+    android:weightSum="100"
+    tools:context="com.example.demoapp.LoginScreen" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/orange"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:weightSum="100" >
+
+        <TextView
+            style="@style/FormSmallLabel"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="20"
+            android:text="UserId" />
+
+        <TextView
+            style="@style/FormSmallLabel"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="25"
+            android:text="Name" />
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="send data" 
+            android:onClick="onClickSendData"/>
+
+        <TextView
+            style="@style/FormSmallLabel"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="25"
+            android:text="OnCampus" />
+
+        <Button
+            style="@style/FormTextInput"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="30"
+            android:onClick="getGeofenceStatus"
+            android:text="Geofence Status"
+            android:textColor="#ff0066" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/mainContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="#00000000"
+        android:orientation="vertical" >
+    </ListView>
+
+</LinearLayout>
