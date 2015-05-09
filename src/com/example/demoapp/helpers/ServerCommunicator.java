@@ -31,6 +31,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 	private InputStream is = null;
 	private String line = "";
 	private String json = "";
+	private String url = "";
 	private JSONObject jObj = null;
 	private ServerAsyncParent parentActivity;
 
@@ -54,7 +55,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 		boolean isRequestSucceeded = false;
 		try {
 
-			String url = params[0];
+			url = params[0];
 			HttpResponse httpResponse;
 			HttpRequestBase httpMethod;
 			// create http request
@@ -123,7 +124,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 			/*int duration = Toast.LENGTH_LONG;
 			Toast toast = Toast.makeText((Context) parentActivity, text, duration);
 			toast.show();*/
-			Log.v("Server_Comm", text + requestParams.toString());
+			Log.v("Server_Comm", text + "To:" + url + requestParams.toString());
 		}
 	}
 

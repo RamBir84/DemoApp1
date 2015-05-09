@@ -69,9 +69,9 @@ public class HomeScreen extends Activity implements ServerAsyncParent {
 
 		// Intent intent = getIntent();
 		// start the geofencingService if necessary
-		if (!isMyServiceRunning(geofencingService.class)) {
+		if (!isMyServiceRunning(GeofencingService.class)) {
 			// Toast.makeText(this, "before", Toast.LENGTH_SHORT).show();
-			startService(new Intent(getBaseContext(), geofencingService.class));
+			startService(new Intent(getBaseContext(), GeofencingService.class));
 			// Toast.makeText(this, "after", Toast.LENGTH_SHORT).show();
 		}
 		// int UserId = intent.getIntExtra("UserId", -3);
@@ -118,7 +118,7 @@ public class HomeScreen extends Activity implements ServerAsyncParent {
 
 	// Method to stop the service
 	public void stopService(View view) {
-		stopService(new Intent(getBaseContext(), geofencingService.class));
+		stopService(new Intent(getBaseContext(), GeofencingService.class));
 	}
 
 	public void getDataFromServer(int userId) {
@@ -177,9 +177,9 @@ public class HomeScreen extends Activity implements ServerAsyncParent {
 	// Handler the geofence button
 	public void getGeofenceStatus(View view) {
 
-		if ((geofencingService.geoStatus == 1) || (geofencingService.geoStatus == 4)) {
+		if ((GeofencingService.geoStatus == 1) || (GeofencingService.geoStatus == 4)) {
 			Toast.makeText(this, "MANUAL : You are inside the IDC", Toast.LENGTH_SHORT).show();
-		} else if (geofencingService.geoStatus == 2) {
+		} else if (GeofencingService.geoStatus == 2) {
 			Toast.makeText(this, "MANUAL : You are outside the IDC", Toast.LENGTH_SHORT).show();
 		} else {
 			Toast.makeText(this, "geoStatus NULL", Toast.LENGTH_SHORT).show();
@@ -187,7 +187,7 @@ public class HomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	// check if the geofencingService is running
-	private boolean isMyServiceRunning(Class<geofencingService> serviceClass) {
+	private boolean isMyServiceRunning(Class<GeofencingService> serviceClass) {
 		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 			if (serviceClass.getName().equals(service.service.getClassName())) {

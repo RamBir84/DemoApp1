@@ -12,7 +12,8 @@ import android.util.Log;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GcmIntentService extends IntentService {
-	public static final int NOTIFICATION_ID = 1;
+	
+	public static int NOTIFICATION_ID = 1;
 	private NotificationManager mNotificationManager;
 	NotificationCompat.Builder builder;
 
@@ -101,8 +102,11 @@ public class GcmIntentService extends IntentService {
 
 	
 	private void notification(char type, String id, String name, String tag) {
+		
 		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+		
 		NotificationCompat.Builder mBuilder;
+		
 		PendingIntent contentIntent;
 
 		if (type == '1') { // If from type 1 (request Received)
@@ -114,9 +118,9 @@ public class GcmIntentService extends IntentService {
 			mBuilder = new NotificationCompat.Builder(this)
 					.setSmallIcon(R.drawable.ic_notification) // have to set a new icon here(if we want to)
 					.setContentTitle("Request Received")
-					.setStyle(new NotificationCompat.BigTextStyle()
-					.bigText("Request received from: " + name))
-					.setContentText("Request received from: " + name);
+					.setStyle(new NotificationCompat.BigTextStyle().bigText("Request received from: " + name))
+					.setContentText("Request received from: " + name)
+					.setAutoCancel(true);
 			
 		} else { // If from type 2 (location Received)
 			
@@ -128,9 +132,10 @@ public class GcmIntentService extends IntentService {
 			mBuilder = new NotificationCompat.Builder(this)
 					.setSmallIcon(R.drawable.ic_notification) // have to set a new icon here(if we want to)
 					.setContentTitle("Location Received")
-					.setStyle(new NotificationCompat.BigTextStyle()
-					.bigText("location received from: " + name))
-					.setContentText("location received from: " + name);
+					.setStyle(new NotificationCompat.BigTextStyle().bigText("location received from: " + name))
+					.setContentText("location received from: " + name)
+					.setAutoCancel(true);
+			NOTIFICATION_ID++;
 		}
 
 		//mBuilder.setDefaults(Notification.DEFAULT_ALL);

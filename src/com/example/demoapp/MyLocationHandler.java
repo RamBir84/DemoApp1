@@ -25,7 +25,7 @@ public class MyLocationHandler extends IntentService implements ServerAsyncParen
 
 	//SharedPreferences settings = getSharedPreferences("UserInfo", 0);
 	private boolean onCampus = true;
-	SharedPreferences settings = geofencingService.settings;//getSharedPreferences("UserInfo", 0);
+	SharedPreferences settings = GeofencingService.settings;//getSharedPreferences("UserInfo", 0);
 	
 	
 	public MyLocationHandler() {
@@ -36,14 +36,14 @@ public class MyLocationHandler extends IntentService implements ServerAsyncParen
 	protected void onHandleIntent(Intent intent) {
 
 		GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
-		geofencingService.geoStatus = geofencingEvent.getGeofenceTransition();		
+		GeofencingService.geoStatus = geofencingEvent.getGeofenceTransition();		
 		
-		if ((geofencingService.geoStatus == 1) || (geofencingService.geoStatus == 4)) {
+		if ((GeofencingService.geoStatus == 1) || (GeofencingService.geoStatus == 4)) {
 			
 			this.sendCheckInToServer(settings.getString("uid", "no uid"), onCampus);
 			Toast.makeText(this, "AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
 			
-		} else if (geofencingService.geoStatus == 2) {
+		} else if (GeofencingService.geoStatus == 2) {
 			
 			this.sendCheckInToServer(settings.getString("uid", "no uid"), !onCampus);
 			Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();

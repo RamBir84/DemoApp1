@@ -16,13 +16,16 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
+<!--      
     <permission
         android:name="com.example.gcm.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
+-->
     <!-- for mock locations -->
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+
     <!-- For FaceBook -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -81,6 +84,7 @@
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -96,7 +100,7 @@
             android:name=".MyLocationHandler"
             android:enabled="true" >
         </service>
-        <service android:name=".geofencingService" />
+        <service android:name=".GeofencingService" />
 
         <!-- for FB -->
         <provider

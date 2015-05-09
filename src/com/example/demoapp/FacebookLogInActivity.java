@@ -3,7 +3,6 @@
 package com.example.demoapp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -19,10 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.demoapp.helpers.ServerAsyncParent;
 import com.example.demoapp.helpers.ServerCommunicator;
@@ -37,7 +33,6 @@ import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.ProfilePictureView;
 import com.facebook.share.ShareApi;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
@@ -47,8 +42,8 @@ import com.facebook.share.widget.ShareDialog;
 
 public class FacebookLogInActivity extends FragmentActivity implements ServerAsyncParent{
 
-    private static final String PERMISSION = "publish_actions";
-    /*private static final Location SEATTLE_LOCATION = new Location("") {
+	/*private static final String PERMISSION = "publish_actions";
+    private static final Location SEATTLE_LOCATION = new Location("") {
         {
             setLatitude(47.6097);
             setLongitude(-122.3331);
@@ -246,7 +241,7 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
     }
 
     private void updateUI() {
-        boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
+    //    boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
 
     //    postStatusUpdateButton.setEnabled(enableButtons || canPresentShareDialog);
     //    postPhotoButton.setEnabled(enableButtons || canPresentShareDialogWithPhotos);
@@ -280,9 +275,9 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
         }
     }
 
-    private void onClickPostStatusUpdate() {
+/*    private void onClickPostStatusUpdate() {
         performPublish(PendingAction.POST_STATUS_UPDATE, canPresentShareDialog);
-    }
+    }*/
 
     private void postStatusUpdate() {
         Profile profile = Profile.getCurrentProfile();
@@ -300,9 +295,9 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
         }
     }
 
-    private void onClickPostPhoto() {
+/*    private void onClickPostPhoto() {
         performPublish(PendingAction.POST_PHOTO, canPresentShareDialogWithPhotos);
-    }
+    }*/
 
     private void postPhoto() {
         Bitmap image = BitmapFactory.decodeResource(this.getResources(), R.drawable.icon);
@@ -326,7 +321,7 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
         return accessToken != null && accessToken.getPermissions().contains("publish_actions");
     }
 
-    private void performPublish(PendingAction action, boolean allowNoToken) {
+/*    private void performPublish(PendingAction action, boolean allowNoToken) {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null) {
             pendingAction = action;
@@ -345,7 +340,7 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
             pendingAction = action;
             handlePendingAction();
         }
-    }
+    }*/
     
     
     

@@ -161,8 +161,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		Log.v("REGID", regid);
 		
 		/*---------------------------------------------------------- Start geofencing service --------------------------------------------------------------*/
-		if (!isMyServiceRunning(geofencingService.class)) {
-			startService(new Intent(getBaseContext(), geofencingService.class));
+		if (!isMyServiceRunning(GeofencingService.class)) {
+			startService(new Intent(getBaseContext(), GeofencingService.class));
 		}
 
 		/*---------------------------------------------------------- Handling search mode --------------------------------------------------------------*/
@@ -566,15 +566,16 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		int gcmResponsStatus = 0;
 
 		try {
-			gcmResponsStatus = jObj.getInt("header");
+			gcmResponsStatus = jObj.getInt("success");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
-		if (gcmResponsStatus == 200) {
+		if (gcmResponsStatus == 1) {
 			/*--Do here the change in the friend list item--*/
+			Log.v("GCM", "Send location request success!!" + " Status: " + gcmResponsStatus + " " + jObj.toString());
 		} else {
-			Log.v("GCM", "Send location request failed" + jObj.toString());
+			Log.v("GCM", "Send location request failed!!" + " Status: " + gcmResponsStatus + " " + jObj.toString());
 		}
 	}
 
@@ -632,7 +633,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	// check if the geofencingService is running
-	private boolean isMyServiceRunning(Class<geofencingService> serviceClass) {
+	private boolean isMyServiceRunning(Class<GeofencingService> serviceClass) {
 		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		for (RunningServiceInfo service : manager
 				.getRunningServices(Integer.MAX_VALUE)) {

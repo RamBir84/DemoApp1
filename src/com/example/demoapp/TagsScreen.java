@@ -66,10 +66,10 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		blur_layout.getForeground().setAlpha(0);
 		
 		// Start geofencing service
-		if (!isMyServiceRunning(geofencingService.class)) {
-			startService(new Intent(getBaseContext(), geofencingService.class));
+		if (!isMyServiceRunning(GeofencingService.class)) {
+			startService(new Intent(getBaseContext(), GeofencingService.class));
 		}
-		userLocation = geofencingService.userLocation;
+		userLocation = GeofencingService.userLocation;
 		
 		//targetID = savedInstanceState.getString("gcm_id");
 		
@@ -264,7 +264,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 			String tag = (tagEdit.getText().toString());
 			
 			// Get current location for the tag
-			userLocation = geofencingService.userLocation;
+			userLocation = GeofencingService.userLocation;
 			
 			// Send the tag
 			sendTag(tag, userLocation);
@@ -277,7 +277,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 	};
 
 	// check if the geofencingService is running
-	private boolean isMyServiceRunning(Class<geofencingService> serviceClass) {
+	private boolean isMyServiceRunning(Class<GeofencingService> serviceClass) {
 		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 			if (serviceClass.getName().equals(service.service.getClassName())) {
