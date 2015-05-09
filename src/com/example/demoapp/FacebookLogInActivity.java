@@ -1,22 +1,4 @@
-/**
- * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
- *
- * You are hereby granted a non-exclusive, worldwide, royalty-free license to use,
- * copy, modify, and distribute this software in source code or binary form for use
- * in connection with the web services and APIs provided by Facebook.
- *
- * As with any software that integrates with the Facebook platform, your use of
- * this software is subject to the Facebook Developer Principles and Policies
- * [http://developers.facebook.com/policy/]. This copyright notice shall be
- * included in all copies or substantial portions of the software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+
 
 package com.example.demoapp;
 
@@ -39,6 +21,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.demoapp.helpers.ServerAsyncParent;
@@ -75,10 +58,10 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
     private final String PENDING_ACTION_BUNDLE_KEY = "com.facebook.samples.hellofacebook:PendingAction";
     
     SharedPreferences settings = null;
-    private Button postStatusUpdateButton;
-    private Button postPhotoButton;
-    private ProfilePictureView profilePictureView;
-    private TextView greeting;
+ //   private Button postStatusUpdateButton;
+  //  private Button postPhotoButton;
+ //   private ProfilePictureView profilePictureView;
+ //   private TextView greeting;
     private PendingAction pendingAction = PendingAction.NONE;
     private boolean canPresentShareDialog;
     private boolean canPresentShareDialogWithPhotos;
@@ -133,6 +116,13 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
         settings = getSharedPreferences("UserInfo", 0);
 
         callbackManager = CallbackManager.Factory.create();
+        
+		settings = getSharedPreferences("UserInfo", 0);
+		if (settings.contains("uid")) {
+			goToHomeActivityAndFinish(settings.getString("uid", "No uid"));
+		}
+		
+
 
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                     @Override
@@ -190,9 +180,9 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
             }
         };
 
-        profilePictureView = (ProfilePictureView) findViewById(R.id.profilePicture);
-        greeting = (TextView) findViewById(R.id.greeting);
-
+   //     profilePictureView = (ProfilePictureView) findViewById(R.id.profilePicture);
+       // greeting = (TextView) findViewById(R.id.greeting);
+/*
         postStatusUpdateButton = (Button) findViewById(R.id.postStatusUpdateButton);
         postStatusUpdateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -206,7 +196,7 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
                 onClickPostPhoto();
             }
         });
-
+*/
         // Can we present the share dialog for regular links?
         canPresentShareDialog = ShareDialog.canShow(ShareLinkContent.class);
 
@@ -258,17 +248,18 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
     private void updateUI() {
         boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
 
-        postStatusUpdateButton.setEnabled(enableButtons || canPresentShareDialog);
-        postPhotoButton.setEnabled(enableButtons || canPresentShareDialogWithPhotos);
-
+    //    postStatusUpdateButton.setEnabled(enableButtons || canPresentShareDialog);
+    //    postPhotoButton.setEnabled(enableButtons || canPresentShareDialogWithPhotos);
+/*
         Profile profile = Profile.getCurrentProfile();
         if (enableButtons && profile != null) {
             profilePictureView.setProfileId(profile.getId());
-            greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
+       //     greeting.setText(getString(R.string.hello_user, profile.getFirstName()));
         } else {
             profilePictureView.setProfileId(null);
-            greeting.setText(null);
+       //     greeting.setText(null);
         }
+        */
     }
 
     private void handlePendingAction() {
@@ -385,7 +376,11 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
     	
     	Profile profile = Profile.getCurrentProfile();
     	AccessToken accessToken = AccessToken.getCurrentAccessToken();
-    	String school = getIntent().getExtras().getString("school");
+    	
+		Spinner schoolListSpinner = (Spinner) findViewById(R.id.spinner);
+		String school = schoolListSpinner.getSelectedItem().toString();
+    	
+    	//String school = "idc";//getIntent().getExtras().getString("school");
     	
     	SharedPreferences.Editor editor = settings.edit();
 		editor.putString("uid", profile.getId());

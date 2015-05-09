@@ -384,7 +384,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		// Set date and date
 		TextView contactDate = (TextView) layout.findViewById(R.id.answer_location_time);
 		contactDate.setText(MainListAdapter.items.get(position).tagDateTime);
-
+/*
 		// Set status message
 		TextView contactStatus = (TextView) layout.findViewById(R.id.answer_status);
 		if (view.getId() == 5) {
@@ -392,7 +392,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		} else {
 			contactStatus.setText("User is currently on campus");
 		}
-
+*/
 		// Set the contact location
 		TextView Location = (TextView) layout.findViewById(R.id.answer_location);
 		Location.setText(MainListAdapter.items.get(position).Location);

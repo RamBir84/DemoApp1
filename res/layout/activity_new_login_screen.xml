@@ -85,9 +85,9 @@
         android:layout_weight="20"
         android:background="@color/transparent"
         android:orientation="horizontal" >
-
+ <!--
         <Spinner
-            android:id="@+id/spinner"
+             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -95,6 +95,7 @@
             android:layout_marginRight="30sp"
             android:entries="@array/schools_list"
             android:prompt="@string/school_prompt" />
+            -->
     </LinearLayout>
 <!-- 
     <com.facebook.login.widget.LoginButton
@@ -111,7 +112,7 @@
         android:layout_gravity="center"
         android:layout_weight="10"
         android:background="@color/transparent" >
-
+<!--  
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -124,6 +125,7 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
+            -->
     </LinearLayout>
 
     <LinearLayout
