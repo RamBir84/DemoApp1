@@ -25,7 +25,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
-public class geofencingService extends Service implements GoogleApiClient.ConnectionCallbacks,
+public class GeofencingService extends Service implements GoogleApiClient.ConnectionCallbacks,
 GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, ServerAsyncParent {
    
 	private GoogleApiClient mGoogleClient;
