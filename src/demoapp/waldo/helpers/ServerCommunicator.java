@@ -1,4 +1,4 @@
-package com.example.demoapp.helpers;
+package demoapp.waldo.helpers;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

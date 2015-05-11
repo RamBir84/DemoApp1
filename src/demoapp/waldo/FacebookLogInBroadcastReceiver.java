@@ -18,7 +18,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.example.demoapp;
+package demoapp.waldo;
 
 import android.os.Bundle;
 import android.util.Log;

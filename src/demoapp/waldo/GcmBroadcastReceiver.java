@@ -1,4 +1,4 @@
-package com.example.demoapp;
+package demoapp.waldo;
 
 import android.app.Activity;
 import android.content.ComponentName;

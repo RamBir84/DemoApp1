@@ -1,6 +1,6 @@
 
 
-package com.example.demoapp;
+package demoapp.waldo;
 
 import java.util.ArrayList;
 
@@ -20,8 +20,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Spinner;
 
-import com.example.demoapp.helpers.ServerAsyncParent;
-import com.example.demoapp.helpers.ServerCommunicator;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookAuthorizationException;
@@ -39,6 +37,9 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
+
+import demoapp.waldo.helpers.ServerAsyncParent;
+import demoapp.waldo.helpers.ServerCommunicator;
 
 public class FacebookLogInActivity extends FragmentActivity implements ServerAsyncParent{
 

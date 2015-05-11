@@ -1,4 +1,4 @@
-package com.example.demoapp;
+package demoapp.waldo;
 
 import java.util.ArrayList;
 
@@ -7,13 +7,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.demoapp.helpers.ServerAsyncParent;
-import com.example.demoapp.helpers.ServerCommunicator;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import demoapp.waldo.helpers.ServerAsyncParent;
+import demoapp.waldo.helpers.ServerCommunicator;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -56,7 +57,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		geoStatus = -1;
 		geoLatitude = 32.177256142836924;/*idc*////32.16469634171559;*apartment*32.16744820334117;
 		geoLongitude = 34.83560096472502;/*idc*////34.84679650515318;*apartment*34.83503853902221;
-		geoRadius = 2000;
+		geoRadius = 1000;
 		geoLocation = new Location("");
 		geoLocation.setLatitude(geoLatitude);
 		geoLocation.setLongitude(geoLongitude);
@@ -128,7 +129,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 									.setRequestId("unique-geofence-id")
 									.setCircularRegion(geoLatitude, geoLongitude, geoRadius)
 /*coordinate and radius in meters*/ .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
-									.setLoiteringDelay(30000) // check every 30 seconds
+									.setLoiteringDelay(60000) // check every 30 seconds
 									.build());
 		
 		PendingIntent pendingIntent = PendingIntent.getService(this, 0, new Intent(this, MyLocationHandler.class), PendingIntent.FLAG_UPDATE_CURRENT);
@@ -184,7 +185,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	public void doOnPostExecute(JSONObject jObj) {
 		try {
 			if (jObj.getInt("success") == 1){
-				Toast.makeText(this,"status was updated successfuly", Toast.LENGTH_LONG).show();
+			//	Toast.makeText(this,"status was updated successfuly", Toast.LENGTH_LONG).show();
 			}else {
 				Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
 				Log.e("geoServisUpdateFailed", jObj.toString());

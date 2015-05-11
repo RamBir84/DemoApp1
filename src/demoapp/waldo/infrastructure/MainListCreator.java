@@ -1,4 +1,4 @@
-package com.example.demoapp.infrastructure;
+package demoapp.waldo.infrastructure;
 
 import java.util.ArrayList;
 
@@ -10,9 +10,10 @@ import org.json.JSONObject;
 
 import android.content.SharedPreferences;
 
-import com.example.demoapp.NewHomeScreen;
-import com.example.demoapp.helpers.ServerAsyncParent;
-import com.example.demoapp.helpers.ServerCommunicator;
+
+import demoapp.waldo.NewHomeScreen;
+import demoapp.waldo.helpers.ServerAsyncParent;
+import demoapp.waldo.helpers.ServerCommunicator;
 
 public class MainListCreator implements ServerAsyncParent {
 

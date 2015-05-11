@@ -20,9 +20,9 @@
     <style name="listHeader">
         <item name="android:textSize">@dimen/fontSize_43px</item>
         <item name="android:shadowColor">#000000</item>
-        <item name="android:shadowDx">-2</item>
-        <item name="android:shadowDy">2</item>
-        <item name="android:shadowRadius">1</item>
+          <item name="android:shadowDx">-1</item> 
+         <item name="android:shadowDy">1</item>
+          <item name="android:shadowRadius">0.5</item>
         <item name="android:textColor">@color/medium_grey2</item>
         <item name="android:textStyle">normal</item>
     </style>

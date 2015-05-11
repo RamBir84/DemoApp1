@@ -1,4 +1,4 @@
-package com.example.demoapp.infrastructure;
+package demoapp.waldo.infrastructure;
 
 import android.location.Location;
 

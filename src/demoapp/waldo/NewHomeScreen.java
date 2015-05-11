@@ -1,4 +1,4 @@
-package com.example.demoapp;
+package demoapp.waldo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +9,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -18,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -25,6 +27,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,17 +45,18 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.demoapp.helpers.ServerAsyncParent;
-import com.example.demoapp.helpers.ServerCommunicator;
-import com.example.demoapp.infrastructure.BitmapPosition;
-import com.example.demoapp.infrastructure.IconStatus;
-import com.example.demoapp.infrastructure.ListItem;
-import com.example.demoapp.infrastructure.MainListAdapter;
-import com.example.demoapp.infrastructure.MainListCreator;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.squareup.picasso.Picasso;
+
+import demoapp.waldo.helpers.ServerAsyncParent;
+import demoapp.waldo.helpers.ServerCommunicator;
+import demoapp.waldo.infrastructure.BitmapPosition;
+import demoapp.waldo.infrastructure.IconStatus;
+import demoapp.waldo.infrastructure.ListItem;
+import demoapp.waldo.infrastructure.MainListAdapter;
+import demoapp.waldo.infrastructure.MainListCreator;
 
 public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	// Design fields
@@ -155,11 +159,11 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		} else {
 			Log.i(TAG, "No valid Google Play Services APK found.");
 		}
-		
+		/*
 		// Print MY ID
 		Toast.makeText(this, regid, Toast.LENGTH_LONG).show();
 		Log.v("REGID", regid);
-		
+		*/
 		/*---------------------------------------------------------- Start geofencing service --------------------------------------------------------------*/
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
@@ -368,8 +372,24 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		LayoutInflater inflater = (LayoutInflater) NewHomeScreen.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.activity_answer_popup,(ViewGroup) findViewById(R.id.popup_element));
 
-		pwindo = new PopupWindow(layout, 700, 500, false);
+	//	pwindo = new PopupWindow(layout,700, 500, false);
+		pwindo = new PopupWindow(layout,LayoutParams.WRAP_CONTENT,  LayoutParams.WRAP_CONTENT, false);
+		/*
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		int height = size.y;
+
+		pwindo.setWidth(width-40);
+		*/
 		pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
+		
+		
+		int wrap = LayoutParams.MATCH_PARENT;
+	//	pwindo.update(wrap, wrap); 
+		
+		
 		btnClosePopup = (ImageButton) layout.findViewById(R.id.btn_close_popup);
 		btnClosePopup.setOnClickListener(cancel_button_click_listener);
 		// blur background and disable layout

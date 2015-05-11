@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.demoapp"
+    package="demoapp.waldo"
     android:versionCode="1"
     android:versionName="1.0" >
 
+	    
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="22" />
@@ -47,38 +48,38 @@
 
         <!-- Activities -->
         <activity
-            android:name="com.example.demoapp.LoginScreen"
+            android:name="demoapp.waldo.LoginScreen"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.example.demoapp.HomeScreen"
+            android:name="demoapp.waldo.HomeScreen"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.example.demoapp.NewHomeScreen"
+            android:name="demoapp.waldo.NewHomeScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" >
         </activity>
         <activity
-            android:name="com.example.demoapp.TagsScreen"
+            android:name="demoapp.waldo.TagsScreen"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.example.demoapp.NewLoginScreen"
+            android:name="demoapp.waldo.NewLoginScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
-            android:name="com.example.demoapp.SettingsScreen"
+            android:name="demoapp.waldo.SettingsScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.example.demoapp.FacebookLogInActivity"
+            android:name="demoapp.waldo.FacebookLogInActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" >
@@ -108,7 +109,7 @@
             android:authorities="com.facebook.app.FacebookContentProvider421560734690363"
             android:exported="true" />
 
-        <receiver android:name="com.example.demoapp.FacebookLogInBroadcastReceiver" >
+        <receiver android:name="demoapp.waldo.FacebookLogInBroadcastReceiver" >
             <intent-filter>
                 <action android:name="com.facebook.platform.AppCallResultBroadcast" />
             </intent-filter>

@@ -1,4 +1,4 @@
-package com.example.demoapp;
+package demoapp.waldo;
 
 import java.util.ArrayList;
 
@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActionBar.LayoutParams;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -34,11 +35,12 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import com.example.demoapp.helpers.ServerAsyncParent;
-import com.example.demoapp.helpers.ServerCommunicator;
-import com.example.demoapp.infrastructure.ListTagItem;
-import com.example.demoapp.infrastructure.TagListAdapter;
-import com.example.demoapp.infrastructure.TagListCreator;
+
+import demoapp.waldo.helpers.ServerAsyncParent;
+import demoapp.waldo.helpers.ServerCommunicator;
+import demoapp.waldo.infrastructure.ListTagItem;
+import demoapp.waldo.infrastructure.TagListAdapter;
+import demoapp.waldo.infrastructure.TagListCreator;
 
 
 public class TagsScreen extends Activity implements ServerAsyncParent {
@@ -230,7 +232,10 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		LayoutInflater inflater = (LayoutInflater) TagsScreen.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.activity_add_tag_popup, (ViewGroup) findViewById(R.id.add_tag_popup));
 
-		pwindo = new PopupWindow(layout, 700, 500, false);
+		//pwindo = new PopupWindow(layout, 700, 500, false);
+		pwindo = new PopupWindow(layout,LayoutParams.WRAP_CONTENT,  LayoutParams.WRAP_CONTENT, false);
+		
+		
 		pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
 		btnClosePopup = (ImageButton) layout.findViewById(R.id.btn_close_add_Tag);
 		btnClosePopup.setOnClickListener(cancel_add_tag_click_listener);

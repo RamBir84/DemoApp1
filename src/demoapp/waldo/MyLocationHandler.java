@@ -1,4 +1,4 @@
-package com.example.demoapp;
+package demoapp.waldo;
 
 import java.util.ArrayList;
 
@@ -7,9 +7,10 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.demoapp.helpers.ServerAsyncParent;
-import com.example.demoapp.helpers.ServerCommunicator;
 import com.google.android.gms.location.GeofencingEvent;
+
+import demoapp.waldo.helpers.ServerAsyncParent;
+import demoapp.waldo.helpers.ServerCommunicator;
 
 
 

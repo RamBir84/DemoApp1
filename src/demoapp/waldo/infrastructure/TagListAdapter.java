@@ -1,6 +1,8 @@
-package com.example.demoapp.infrastructure;
+package demoapp.waldo.infrastructure;
 
 import java.util.ArrayList;
+
+import demoapp.waldo.R;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.demoapp.R;
 
 public class TagListAdapter extends ArrayAdapter<ListTagItem> {
 

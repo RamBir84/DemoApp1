@@ -1,12 +1,13 @@
-package com.example.demoapp.infrastructure;
+package demoapp.waldo.infrastructure;
 
 import java.util.ArrayList;
 
-import com.example.demoapp.R;
-import com.example.demoapp.R.color;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
+
+import demoapp.waldo.R;
+import demoapp.waldo.R.color;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -1,7 +1,7 @@
-package com.example.demoapp.infrastructure;
+package demoapp.waldo.infrastructure;
 
-import com.example.demoapp.R;
 
+import demoapp.waldo.R;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
