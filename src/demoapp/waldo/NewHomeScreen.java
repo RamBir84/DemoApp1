@@ -19,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -26,6 +27,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -49,10 +51,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.squareup.picasso.Picasso.LoadedFrom;
 
 import demoapp.waldo.helpers.ServerAsyncParent;
 import demoapp.waldo.helpers.ServerCommunicator;
 import demoapp.waldo.infrastructure.BitmapPosition;
+import demoapp.waldo.infrastructure.CircleImageView;
 import demoapp.waldo.infrastructure.IconStatus;
 import demoapp.waldo.infrastructure.ListItem;
 import demoapp.waldo.infrastructure.MainListAdapter;
@@ -75,8 +80,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	MainListAdapter adapter;
 	Boolean usersDataLoaded = false;
 	String UserId;
-	
 	SharedPreferences settings = null;
+	public static int Width, Height;
 	
 
 	// GCM fields
@@ -85,7 +90,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	private static final String PROPERTY_APP_VERSION = "appVersion";
 	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-	// this is the project number
+	// Project ID
 	String SENDER_ID = "439243586723";
 
 	// Tag used on log messages.
@@ -101,49 +106,44 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	String message = "This is a test GCM message!!";
 	private String locationSenderId;
 	private String locationSenderTag;
+	
+	private boolean onCampus;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		// Start geofencing
+		if (!isMyServiceRunning(GeofencingService.class)) {
+			startService(new Intent(getBaseContext(), GeofencingService.class));
+		}
+	//	Toast.makeText(this, "geo status: " + GeofencingService.geoStatus + " on campus: " + GeofencingService.onCampus, Toast.LENGTH_LONG).show();
+		//User profile - set border color
+		if (GeofencingService.onCampus){
+			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
+			onCampus = true;
+		} else {
+			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
+			onCampus = false;
+		}
 		if (getIntent().getExtras() != null){
 			locationSenderId = getIntent().getExtras().getString("user_id");	
 			locationSenderTag = getIntent().getExtras().getString("tag");
 		}
-		
+		// Set the activity, search box and blur for popup mode
 		setContentView(R.layout.activity_new_home_screen);
 		blur_layout = (FrameLayout) findViewById(R.id.newScreenFrame);
 		blur_layout.getForeground().setAlpha(0);
 		searchBoxLayout = (LinearLayout) findViewById(R.id.topBarMain);
-		
-		context = getApplicationContext();
-		
-		// Some data
-		/*fakeData = new ArrayList<ListItem>();
-		fakeData.add(new ListItem("Or Bokobza", "Last seen in the library", "http://a2zhdwallpapers.com/wp-content/uploads/ktzbulkwallpaper-1423499592/profile-dp-for-boys-facebook-6.jpg", "answer_received", "ID", "10.04.15,  10:04", "IDC Herzliya"));
-		fakeData.add(new ListItem("Clara Lutzky", "Last seen in the cafeteria", "http://sms.latestsms.in/wp-content/uploads/profile-pictures209.jpg", "request_sent", "ID", "10.04.15,  12:00", "IDC Herzliya"));
-		fakeData.add(new ListItem("Ram Birbrayer", "Last seen in class L101", "http://wallpaperszoo.com/wp-content/uploads/2014/02/cool-profile-pictures-for-boys-on-facebook-9.jpg", "request_received", "ID", "10.04.15,  13:08", "IDC Herzliya"));
-		fakeData.add(new ListItem("Jesse Ritz", "Last seen in the main entrance", "http://im2.peldata.com/bl7/66932/22bg.jpg", "online", "ID", "10.04.15,  14:04", "IDC Herzliya"));
-		fakeData.add(new ListItem("Barr Solnik", "", "http://www.theprofilepictures.com/wp-content/uploads/2011/11/Boys-profile-pictures-facebook-7.jpg", "request_received", "ID", "", "IDC Herzliya"));
-		fakeData.add(new ListItem("Maya Klein", "Last seen in some place", "http://www.trickspk.com/wp-content/uploads/2015/01/cute-girls-profile-photo-for-facebook-4-e851c.jpg", "offline", "ID", "09.04.15,  17:52", "IDC Herzliya"));
-		fakeData.add(new ListItem("Dotan Jakoby", "Last seen in some place", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "09.04.15,  14:34", "IDC Herzliya"));
-		fakeData.add(new ListItem("Irina Afanasyeva", "Last seen in some place", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "08.04.15,  20:40", "IDC Herzliya"));
-		fakeData.add(new ListItem("Hagar Bass", "Last seen in some place", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "09.04.15,  10:04", "IDC Herzliya"));
-		fakeData.add(new ListItem("Ariel Ben Moshe", "Last seen in some place", "http://www.paklatest.com/wp-content/uploads/2014/12/cool-images-for-facebook-profile-for-boys-5mmm1.jpg", "offline", "ID", "08.04.15,  10:04", "IDC Herzliya"));
-		
-		
-		mainContainer = (ListView) findViewById(R.id.mainContainer);
-		
-		baseListAdapter = new MainListAdapter(this, userData);
-		
-		updatedUserData = new ArrayList<ListItem>(userData);
-		adapter = new MainListAdapter(this, updatedUserData);
-		mainContainer.setAdapter(adapter);
-		myAdapter = adapter;*/
-		
+		context = getApplicationContext();		
 		settings = getSharedPreferences("UserInfo", 0);
 		UserId = settings.getString("uid", "No uid");
-		
 		new MainListCreator(UserId, this);
+		
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		Width = size.x;
+		Height = size.y;
 		
 		
 		/*--------------------------------------------------------------- GCM ----------------------------------------------------------------------------*/
@@ -164,10 +164,13 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		Toast.makeText(this, regid, Toast.LENGTH_LONG).show();
 		Log.v("REGID", regid);
 		*/
-		/*---------------------------------------------------------- Start geofencing service --------------------------------------------------------------*/
-		if (!isMyServiceRunning(GeofencingService.class)) {
-			startService(new Intent(getBaseContext(), GeofencingService.class));
-		}
+		/*---------------------------------------------------------- Geofencing status --------------------------------------------------------------*/
+
+		
+		// Set profile picture
+		String fb_url = "https://graph.facebook.com/" + UserId + "/picture?type=large";
+		CircleImageView userProfile = (CircleImageView) findViewById(R.id.user_profile);
+	    Picasso.with(context).load(fb_url).into(userProfile);
 
 		/*---------------------------------------------------------- Handling search mode --------------------------------------------------------------*/
 		textLength = 0;
@@ -263,6 +266,14 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		Intent i = new Intent(getApplicationContext(), SettingsScreen.class);
 		startActivityForResult(i, SETTINGS_RESULT);
 	}
+	
+	public void onClickUserProfile(View view) {
+		if (onCampus){
+			Toast.makeText(this, "You Are Currently On Campus", Toast.LENGTH_LONG).show();
+		} else {
+			Toast.makeText(this, "You Are Currently Not On Campus", Toast.LENGTH_LONG).show();
+		}
+	}
 
 	// Search Button
 	public void onClickSearch(View view) {
@@ -323,40 +334,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			break;
 		}
 		
-		
-		/*if (view.getId() == 1) { // Online
-			view.setSelected(true);
-			Toast.makeText(this, "Location request was sent to: " + MainListAdapter.items.get(position).contact_name, Toast.LENGTH_SHORT).show();
-			view.setId(2);
-			MainListAdapter.items.get(position).icon_status = IconStatus.request_sent;
-			myAdapter.notifyDataSetChanged();
-
-		} else {
-			if (view.getId() == 2) { // Request_sent
-				Toast.makeText(this, "Location request was already sent", Toast.LENGTH_SHORT).show();
-				myAdapter.notifyDataSetChanged();
-			}
-		}
-		if (view.getId() == 3) { // Request_received
-			startActivity(new Intent(this, TagsScreen.class));
-			// Remove the above part when we manage to change the similar part
-			// in the tag screen
-			view.setSelected(true);
-			view.setId(1);
-			MainListAdapter.items.get(position).icon_status = "online";
-			myAdapter.notifyDataSetChanged();
-		}
-		if (view.getId() == 4) { // Answer_received
-			view.setSelected(true);
-			view.setId(1);
-			initiatePopupWindow(view);
-			MainListAdapter.items.get(position).icon_status = "online";
-			myAdapter.notifyDataSetChanged();
-		}
-		if (view.getId() == 5) { // Offline
-			Toast.makeText(this, "The user is currently not on campus",
-					Toast.LENGTH_SHORT).show();
-		}*/
 	}
 
 	// ListProfile Button
@@ -373,22 +350,9 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		View layout = inflater.inflate(R.layout.activity_answer_popup,(ViewGroup) findViewById(R.id.popup_element));
 
 	//	pwindo = new PopupWindow(layout,700, 500, false);
-		pwindo = new PopupWindow(layout,LayoutParams.WRAP_CONTENT,  LayoutParams.WRAP_CONTENT, false);
-		/*
-		Display display = getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		int width = size.x;
-		int height = size.y;
-
-		pwindo.setWidth(width-40);
-		*/
+	//  pwindo = new PopupWindow(layout,LayoutParams.WRAP_CONTENT,  LayoutParams.WRAP_CONTENT, false);
+		pwindo = new PopupWindow(layout, (int)(Width/1.1), (int)(Height/2.5), false);
 		pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
-		
-		
-		int wrap = LayoutParams.MATCH_PARENT;
-	//	pwindo.update(wrap, wrap); 
-		
 		
 		btnClosePopup = (ImageButton) layout.findViewById(R.id.btn_close_popup);
 		btnClosePopup.setOnClickListener(cancel_button_click_listener);
@@ -663,4 +627,29 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}
 		return false;
 	}
+	
+	
+	private class ExtendedTarget implements Target {
+
+		CircleImageView refButton;
+		
+		
+		public ExtendedTarget(CircleImageView refButton) {
+			this.refButton = refButton;
+		}
+		@Override
+		public void onBitmapFailed(Drawable arg0) {
+			// TODO Auto-generated method stub
+		}
+		@Override
+		public void onBitmapLoaded(Bitmap b, LoadedFrom arg1) {
+			Drawable profileImageAsDrawable = new BitmapDrawable(context.getResources(), b);
+			refButton.setImageDrawable(profileImageAsDrawable);
+			refButton.setTag(new BitmapPosition(b, (Integer) refButton.getTag())); // Put the bitmap and the position in refButton
+		}
+		@Override
+		public void onPrepareLoad(Drawable arg0) {
+		}
+	}
+	
 }

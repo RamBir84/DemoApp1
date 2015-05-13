@@ -63,8 +63,7 @@
                     style="@style/listHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginTop="10sp"
+                    android:layout_gravity="center"
                     android:text="contact name"
                     android:textColor="@color/grey_popup_text"
                     android:textSize="23sp" />
@@ -140,6 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
                 android:scaleType="fitXY"
+                android:adjustViewBounds="true"
                 android:src="@drawable/ic_location_symbol" />
         </LinearLayout>
 

@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.ActionBar.LayoutParams;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -78,46 +77,6 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		
 		new TagListCreator(userLocation, this);
 
-/*		// Fake tags data
-		ArrayList<double[]> locationValues = new ArrayList<double[]>();
-		locationValues.add(new double[]{32.164573732085216, 34.846692737191916});
-		locationValues.add(new double[]{32.164941560481445, 34.84806066378951});
-		locationValues.add(new double[]{32.16795678912813, 34.83754640445113});
-		locationValues.add(new double[]{32.16464638966391, 34.84786754474044});
-		locationValues.add(new double[]{32.164582814285744, 34.847985561937094});
-		fakeTags = new ArrayList<ListTagItem>();
-		for (int i = 0; i < locationValues.size(); i++) {
-			Location loc = new Location("i");
-			loc.setLatitude(locationValues.get(i)[0]);
-			loc.setLongitude(locationValues.get(i)[1]);
-			fakeTags.add(new ListTagItem("", loc));
-		}
-		fakeTags.get(0).tag = "In the library - first floor";
-		fakeTags.get(1).tag = "In the cafeteria";
-		fakeTags.get(2).tag = "In class L101";
-		fakeTags.get(3).tag = "In the main entrance";
-		fakeTags.get(4).tag = "In the miLAb class";
-		*/
-		
-		/*float radius = userLocation.getAccuracy();
-		Location tagLocation;
-		ArrayList<ListTagItem> tagsInUserLocation = new ArrayList<ListTagItem>();
-
-		for (int i = 0; i < fakeTags.size(); i++) {
-			tagLocation = fakeTags.get(i).tag_location;
-			if ((userLocation.distanceTo(tagLocation) - tagLocation.getAccuracy()) <= (radius + 1000)){
-				tagsInUserLocation.add(new ListTagItem(fakeTags.get(i).tag , tagLocation));
-			}
-		}
-		mainTagContainer = (ListView)findViewById(R.id.mainTagContainer);
-		ListAdapter listAdapter = new TagListAdapter(this, tagsInUserLocation);
-		mainTagContainer.setAdapter(listAdapter);
-		
-		
-		for (int i = 0; i < fakeTags.size(); i++) {
-			System.out.println("tag: " + fakeTags.get(i).tag);
-			System.out.println("tag location: " + fakeTags.get(i).tag_location.getLatitude() + ", " + fakeTags.get(i).tag_location.getLongitude());
-		}*/
 
 	}
 	
@@ -137,19 +96,13 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 
 		for (int i = 0; i < fakeTags.size(); i++) {
 			tagLocation = fakeTags.get(i).tag_location;
-			if ((userLocation.distanceTo(tagLocation) - tagLocation.getAccuracy()) <= (radius + 1000)){
+			if ((userLocation.distanceTo(tagLocation) - tagLocation.getAccuracy()) <= (radius + 100)){
 				tagsInUserLocation.add(new ListTagItem(fakeTags.get(i).tag , tagLocation));
 			}
 		}
 		mainTagContainer = (ListView)findViewById(R.id.mainTagContainer);
 		ListAdapter listAdapter = new TagListAdapter(this, tagsInUserLocation);
 		mainTagContainer.setAdapter(listAdapter);
-		
-		
-		for (int i = 0; i < fakeTags.size(); i++) {
-			System.out.println("tag: " + fakeTags.get(i).tag);
-			System.out.println("tag location: " + fakeTags.get(i).tag_location.getLatitude() + ", " + fakeTags.get(i).tag_location.getLongitude());
-		}
 
 	}
 	
@@ -233,7 +186,9 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		View layout = inflater.inflate(R.layout.activity_add_tag_popup, (ViewGroup) findViewById(R.id.add_tag_popup));
 
 		//pwindo = new PopupWindow(layout, 700, 500, false);
-		pwindo = new PopupWindow(layout,LayoutParams.WRAP_CONTENT,  LayoutParams.WRAP_CONTENT, false);
+		//pwindo = new PopupWindow(layout,LayoutParams.WRAP_CONTENT,  LayoutParams.WRAP_CONTENT, false);
+		
+		pwindo = new PopupWindow(layout, (int)(NewHomeScreen.Width/1.1), (int)(NewHomeScreen.Height/2.5), false);
 		
 		
 		pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
