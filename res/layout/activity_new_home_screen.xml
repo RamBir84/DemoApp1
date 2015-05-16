@@ -116,7 +116,7 @@
 
                 <!-- android:onClick="onClickMenu" -->
 
-                <demoapp.waldo.infrastructure.CircleImageView
+                <waldo_app.waldo.infrastructure.CircleImageView
                     android:id="@+id/user_profile"
                     android:layout_width="52dp"
                     android:layout_height="52dp"

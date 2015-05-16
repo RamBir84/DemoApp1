@@ -1,6 +1,5 @@
 
-
-package demoapp.waldo;
+package waldo_app.waldo;
 
 import java.util.ArrayList;
 
@@ -8,6 +7,10 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import waldo_app.waldo.helpers.ServerAsyncParent;
+import waldo_app.waldo.helpers.ServerCommunicator;
+
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -38,8 +41,6 @@ import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 
-import demoapp.waldo.helpers.ServerAsyncParent;
-import demoapp.waldo.helpers.ServerCommunicator;
 
 public class FacebookLogInActivity extends FragmentActivity implements ServerAsyncParent{
 

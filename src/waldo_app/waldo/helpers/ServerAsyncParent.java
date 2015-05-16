@@ -1,4 +1,4 @@
-package demoapp.waldo.helpers;
+package waldo_app.waldo.helpers;
 
 import org.json.JSONObject;
 

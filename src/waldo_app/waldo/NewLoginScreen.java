@@ -1,4 +1,4 @@
-package demoapp.waldo;
+package waldo_app.waldo;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.facebook.appevents.AppEventsLogger;
+
 
 public class NewLoginScreen extends Activity /*implements ServerAsyncParent*/ {
 	

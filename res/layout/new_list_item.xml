@@ -31,7 +31,7 @@
             android:orientation="vertical"
             android:weightSum="100" >
 
-        <demoapp.waldo.infrastructure.CircleImageView
+        <waldo_app.waldo.infrastructure.CircleImageView
             android:id="@+id/listProfileImage"
             android:layout_width="57dp"
             android:layout_height="57dp"

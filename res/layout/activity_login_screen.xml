@@ -6,7 +6,7 @@
     android:background="#fff"
     android:orientation="vertical"
     android:weightSum="100"
-    tools:context="demoapp.waldo.LoginScreen" >
+    tools:context="waldo_app.waldo.LoginScreen" >
 
     <View
         android:layout_width="match_parent"

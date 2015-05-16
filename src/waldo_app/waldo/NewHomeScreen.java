@@ -1,4 +1,4 @@
-package demoapp.waldo;
+package waldo_app.waldo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,7 +9,16 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.ActionBar.LayoutParams;
+import waldo_app.waldo.helpers.ServerAsyncParent;
+import waldo_app.waldo.helpers.ServerCommunicator;
+import waldo_app.waldo.infrastructure.BitmapPosition;
+import waldo_app.waldo.infrastructure.CircleImageView;
+import waldo_app.waldo.infrastructure.IconStatus;
+import waldo_app.waldo.infrastructure.ListItem;
+import waldo_app.waldo.infrastructure.MainListAdapter;
+import waldo_app.waldo.infrastructure.MainListCreator;
+
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -27,7 +36,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -54,36 +62,28 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Picasso.LoadedFrom;
 
-import demoapp.waldo.helpers.ServerAsyncParent;
-import demoapp.waldo.helpers.ServerCommunicator;
-import demoapp.waldo.infrastructure.BitmapPosition;
-import demoapp.waldo.infrastructure.CircleImageView;
-import demoapp.waldo.infrastructure.IconStatus;
-import demoapp.waldo.infrastructure.ListItem;
-import demoapp.waldo.infrastructure.MainListAdapter;
-import demoapp.waldo.infrastructure.MainListCreator;
 
 public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	// Design fields
 	private ListView mainContainer;
 	ImageButton btnClosePopup;
 	private PopupWindow pwindo;
-	private int position, textLength;
+	public int position, textLength;
 	FrameLayout blur_layout;
 	ArrayList<ListItem> userData, updatedUserData;
 	LinearLayout searchBoxLayout;
 	EditText searchBox;
 	ListAdapter baseListAdapter;
-	MainListAdapter myAdapter;
+	public MainListAdapter myAdapter;
 	public static Bitmap bitmap;
 	private static final int SETTINGS_RESULT = 1;
 	MainListAdapter adapter;
 	Boolean usersDataLoaded = false;
-	String UserId;
-	SharedPreferences settings = null;
+	public String UserId;
+	public SharedPreferences settings = null;
 	public static int Width, Height;
 	
-
+//some changess - and another changes
 	// GCM fields
 	public static final String EXTRA_MESSAGE = "message";
 	public static final String PROPERTY_REG_ID = "registration_id";
@@ -102,12 +102,12 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	// hold the registration ID of the user
 	String regid;
-	String targetID = "APA91bGhtJwtxwvFSbq0GLk1lbuL_D92jJTjojfFs4wbg_bEdc_Q_gqt0AJEauUG55YdvQpEuxcBop6Yb4iKYb3RjKXtTJSAollo8EwgtZxvkkqXoQTMwOxxX5NVXFM3JXE6L6q08xa6rh9En9AK8S5kRJcQ7fxQ";
+	String targetID = "nothing";//APA91bGhtJwtxwvFSbq0GLk1lbuL_D92jJTjojfFs4wbg_bEdc_Q_gqt0AJEauUG55YdvQpEuxcBop6Yb4iKYb3RjKXtTJSAollo8EwgtZxvkkqXoQTMwOxxX5NVXFM3JXE6L6q08xa6rh9En9AK8S5kRJcQ7fxQ";
 	String message = "This is a test GCM message!!";
 	private String locationSenderId;
 	private String locationSenderTag;
 	
-	private boolean onCampus;
+	private int geoStatus;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -116,15 +116,16 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
 		}
-	//	Toast.makeText(this, "geo status: " + GeofencingService.geoStatus + " on campus: " + GeofencingService.onCampus, Toast.LENGTH_LONG).show();
+		
 		//User profile - set border color
-		if (GeofencingService.onCampus){
+		geoStatus = GeofencingService.geoStatus;
+		if (geoStatus == 1 || geoStatus == 4){
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
-			onCampus = true;
 		} else {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
-			onCampus = false;
 		}
+		
+		
 		if (getIntent().getExtras() != null){
 			locationSenderId = getIntent().getExtras().getString("user_id");	
 			locationSenderTag = getIntent().getExtras().getString("tag");
@@ -145,7 +146,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		Width = size.x;
 		Height = size.y;
 		
-		
 		/*--------------------------------------------------------------- GCM ----------------------------------------------------------------------------*/
 		// mDisplay = (TextView) findViewById(R.id.display);
 
@@ -165,7 +165,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		Log.v("REGID", regid);
 		*/
 		/*---------------------------------------------------------- Geofencing status --------------------------------------------------------------*/
-
 		
 		// Set profile picture
 		String fb_url = "https://graph.facebook.com/" + UserId + "/picture?type=large";
@@ -209,6 +208,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	
 	
 	public void onDataLoadeFromServer(ArrayList<ListItem> listOfUsers) {
+		System.out.println("odlfs1");
 		/**----------------------    TEST    ------------------------**/
 		//listOfUsers.get(1).icon_status = IconStatus.request_received;
 		/**----------------------    TEST    ------------------------**/
@@ -258,6 +258,11 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		finish();
 	}
 
+	
+	public void NotifyDataChanged(){
+		myAdapter.notifyDataSetChanged();
+	}
+	
 	// Menu Button
 	public void onClickMenu(View view) {
 		Toast.makeText(this, "Open menu", Toast.LENGTH_SHORT).show();
@@ -268,7 +273,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 	
 	public void onClickUserProfile(View view) {
-		if (onCampus){
+		if (geoStatus == 1 || geoStatus == 4){
 			Toast.makeText(this, "You Are Currently On Campus", Toast.LENGTH_LONG).show();
 		} else {
 			Toast.makeText(this, "You Are Currently Not On Campus", Toast.LENGTH_LONG).show();
@@ -520,6 +525,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	/*------------------------------------------ Send a GCM location request. --------------------------------------------------*/
 	public void sendGcmLocationRquest(final View view) {
+		
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		System.out.println("the registration id: " + regid);
 		
@@ -533,7 +539,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 					.append(regid).append(",")
 					.append(settings.getString("userName", "Your friend")).append(".");
 		message = gcm_message.toString();
-		
 		
 		/* here we put the reciever id" */
 		params.add(new BasicNameValuePair("target", targetID));

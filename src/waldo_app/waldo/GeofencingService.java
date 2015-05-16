@@ -1,4 +1,4 @@
-package demoapp.waldo;
+package waldo_app.waldo;
 
 import java.util.ArrayList;
 
@@ -7,14 +7,16 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import waldo_app.waldo.helpers.ServerAsyncParent;
+import waldo_app.waldo.helpers.ServerCommunicator;
+
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import demoapp.waldo.helpers.ServerAsyncParent;
-import demoapp.waldo.helpers.ServerCommunicator;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -129,8 +131,10 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		.setRequestId("unique-geofence-id")
 		.setCircularRegion(geoLatitude, geoLongitude, geoRadius)
 		/*coordinate and radius in meters*/ .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
-		.setLoiteringDelay(300000) // check every 300 seconds (5 minutes)
+		.setLoiteringDelay(300000) // check every 300 seconds (5 minutes) (1000 = 1 sec)
 		.build());
+		
+		System.out.println("IM HERE!!!!!");
 
 		PendingIntent pendingIntent = PendingIntent.getService(this, 0, new Intent(this, MyLocationHandler.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -141,11 +145,11 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		if (distance < geoRadius){
 			geoStatus = 1;
 			sendCheckInToServer(settings.getString("uid", "No uid"), onCampus);
-		//	Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
 		} else {
 			geoStatus = 2;
 			sendCheckInToServer(settings.getString("uid", "No uid"), !onCampus);
-		//	Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
 		}	
 	}
 

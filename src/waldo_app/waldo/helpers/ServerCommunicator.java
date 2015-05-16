@@ -1,4 +1,4 @@
-package demoapp.waldo.helpers;
+package waldo_app.waldo.helpers;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -14,8 +14,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import waldo_app.waldo.NewHomeScreen;
+import waldo_app.waldo.TagsScreen;
+import waldo_app.waldo.infrastructure.MainListCreator;
+
+
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -33,6 +40,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 	private String json = "";
 	private String url = "";
 	private JSONObject jObj = null;
+	private JSONArray jArr = null;
 	private ServerAsyncParent parentActivity;
 
 	public ServerCommunicator(ServerAsyncParent activity, List<NameValuePair> params, String method) {
@@ -56,6 +64,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 		try {
 
 			url = params[0];
+			System.out.println("url: " + url);
 			HttpResponse httpResponse;
 			HttpRequestBase httpMethod;
 			// create http request
@@ -79,7 +88,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 			// get response from server and parse it to json
 			HttpEntity httpEntity = httpResponse.getEntity();
 			is = httpEntity.getContent();
-
+			
 			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"), 8);
 			StringBuilder sb = new StringBuilder();
 			line = reader.readLine();
@@ -90,23 +99,38 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 
 			is.close();
 			json = sb.toString();
-
 			// try parse the string to a JSON object
 			jObj = new JSONObject(json);
-
 			// check json success tag
 			int success = jObj.getInt("success");
 
 			if (success == 1) {
 				isRequestSucceeded = true;
 				Log.d("DemoApp_ServerComm", "Request succeeded: " + json.toString());
+		//		System.out.println(":1");
 			} else {
 				// failed to update product
 				Log.d("DemoApp_ServerComm", "Request failed" + json.toString());
+		//		System.out.println(":2");
+
 			}
 		} catch (Exception e) {
 			Log.d("DemoApp_ServerComm", "Request failed" + e);
 			e.printStackTrace();
+		//	System.out.println(":3");
+			
+			
+			/*
+			// the problem 
+			if (method == "POST"){
+			NewHomeScreen home = (NewHomeScreen)parentActivity;
+		//	home.settings = home.getSharedPreferences("UserInfo", 0);
+		//	home.UserId = home.settings.getString("uid", "No uid");
+		//	new MainListCreator(home.UserId, home);
+			home.NotifyDataChanged();
+		//	home.sendGcmLocationRquest();
+			}
+			*/
 		}
 		return isRequestSucceeded;
 	}

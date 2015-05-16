@@ -1,4 +1,4 @@
-package demoapp.waldo;
+package waldo_app.waldo;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -11,6 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 
 public class GcmIntentService extends IntentService {
 	
@@ -47,6 +48,7 @@ public class GcmIntentService extends IntentService {
 			// If it's a regular GCM message, do some work.
 				if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 				
+					System.out.println(":1");
 				// Post notification of received message.
 				sendNotification(extras.getString("message"));
 				Log.i(HomeScreen.TAG, "Received: " + extras.toString());
@@ -64,6 +66,7 @@ public class GcmIntentService extends IntentService {
 	For example: 2,301633590,or bokobza,in some place.
 */
 	private void sendNotification(String msg) {
+		System.out.println(":2");
 		char type;
 		String id, name;
 		String tag = "";
@@ -103,6 +106,7 @@ public class GcmIntentService extends IntentService {
 
 	
 	private void notification(char type, String id, String name, String tag) {
+		System.out.println(":3");
 		
 		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		

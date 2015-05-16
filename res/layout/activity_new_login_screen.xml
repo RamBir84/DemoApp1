@@ -7,7 +7,7 @@
     android:background="@drawable/bcg_screen_color"
     android:orientation="vertical"
     android:weightSum="100"
-    tools:context="demoapp.waldo.NewLoginScreen" >
+    tools:context="waldo_app.waldo.NewLoginScreen" >
 
     <LinearLayout
         android:layout_width="match_parent"

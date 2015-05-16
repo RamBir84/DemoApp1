@@ -1,4 +1,4 @@
-package demoapp.waldo;
+package waldo_app.waldo;
 
 import android.app.Activity;
 import android.content.ComponentName;

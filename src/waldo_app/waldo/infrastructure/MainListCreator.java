@@ -1,4 +1,4 @@
-package demoapp.waldo.infrastructure;
+package waldo_app.waldo.infrastructure;
 
 import java.util.ArrayList;
 
@@ -8,12 +8,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import waldo_app.waldo.NewHomeScreen;
+import waldo_app.waldo.helpers.ServerAsyncParent;
+import waldo_app.waldo.helpers.ServerCommunicator;
+
+
 import android.content.SharedPreferences;
 
 
-import demoapp.waldo.NewHomeScreen;
-import demoapp.waldo.helpers.ServerAsyncParent;
-import demoapp.waldo.helpers.ServerCommunicator;
 
 public class MainListCreator implements ServerAsyncParent {
 
@@ -24,6 +26,7 @@ public class MainListCreator implements ServerAsyncParent {
 	public MainListCreator(String uidList, NewHomeScreen parent) {
 		this.parent = parent;
 		getDataFromServer(uidList);
+		System.out.println("mlc1");
 	}
 
 	public void getDataFromServer(String uidList) {
@@ -46,6 +49,7 @@ public class MainListCreator implements ServerAsyncParent {
 
 	public void setDataFromServer(JSONArray users) {
 		try {
+			System.out.println("mlc2");
 			/*
 			SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault());
 			String date = df.format(Calendar.getInstance().getTime());

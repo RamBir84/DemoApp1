@@ -1,4 +1,4 @@
-package demoapp.waldo;
+package waldo_app.waldo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,12 +12,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import waldo_app.waldo.helpers.ServerAsyncParent;
+import waldo_app.waldo.helpers.ServerCommunicator;
+
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-
-import demoapp.waldo.helpers.ServerAsyncParent;
-import demoapp.waldo.helpers.ServerCommunicator;
 
 import android.app.Activity;
 import android.app.ActivityManager;

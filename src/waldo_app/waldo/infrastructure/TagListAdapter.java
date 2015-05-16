@@ -1,8 +1,8 @@
-package demoapp.waldo.infrastructure;
+package waldo_app.waldo.infrastructure;
 
 import java.util.ArrayList;
 
-import demoapp.waldo.R;
+import waldo_app.waldo.R;
 
 import android.content.Context;
 import android.view.LayoutInflater;

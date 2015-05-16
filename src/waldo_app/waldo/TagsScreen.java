@@ -1,4 +1,4 @@
-package demoapp.waldo;
+package waldo_app.waldo;
 
 import java.util.ArrayList;
 
@@ -6,6 +6,13 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import waldo_app.waldo.helpers.ServerAsyncParent;
+import waldo_app.waldo.helpers.ServerCommunicator;
+import waldo_app.waldo.infrastructure.ListTagItem;
+import waldo_app.waldo.infrastructure.TagListAdapter;
+import waldo_app.waldo.infrastructure.TagListCreator;
+
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -35,11 +42,6 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 
-import demoapp.waldo.helpers.ServerAsyncParent;
-import demoapp.waldo.helpers.ServerCommunicator;
-import demoapp.waldo.infrastructure.ListTagItem;
-import demoapp.waldo.infrastructure.TagListAdapter;
-import demoapp.waldo.infrastructure.TagListCreator;
 
 
 public class TagsScreen extends Activity implements ServerAsyncParent {

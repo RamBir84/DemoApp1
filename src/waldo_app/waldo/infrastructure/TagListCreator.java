@@ -1,4 +1,4 @@
-package demoapp.waldo.infrastructure;
+package waldo_app.waldo.infrastructure;
 
 import java.util.ArrayList;
 
@@ -8,13 +8,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import waldo_app.waldo.TagsScreen;
+import waldo_app.waldo.helpers.ServerAsyncParent;
+import waldo_app.waldo.helpers.ServerCommunicator;
+
+
 import android.content.SharedPreferences;
 import android.location.Location;
 
 
-import demoapp.waldo.TagsScreen;
-import demoapp.waldo.helpers.ServerAsyncParent;
-import demoapp.waldo.helpers.ServerCommunicator;
 
 public class TagListCreator implements ServerAsyncParent {
 

@@ -1,4 +1,4 @@
-package demoapp.waldo.infrastructure;
+package waldo_app.waldo.infrastructure;
 
 import android.graphics.Bitmap;
 
