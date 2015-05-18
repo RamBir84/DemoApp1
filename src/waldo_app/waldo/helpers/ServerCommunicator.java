@@ -40,7 +40,6 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 	private String json = "";
 	private String url = "";
 	private JSONObject jObj = null;
-	private JSONArray jArr = null;
 	private ServerAsyncParent parentActivity;
 
 	public ServerCommunicator(ServerAsyncParent activity, List<NameValuePair> params, String method) {
@@ -99,6 +98,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 
 			is.close();
 			json = sb.toString();
+			System.out.println("json:" + json);
 			// try parse the string to a JSON object
 			jObj = new JSONObject(json);
 			// check json success tag
@@ -107,17 +107,19 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 			if (success == 1) {
 				isRequestSucceeded = true;
 				Log.d("DemoApp_ServerComm", "Request succeeded: " + json.toString());
-		//		System.out.println(":1");
+				System.out.println(":1");
 			} else {
 				// failed to update product
 				Log.d("DemoApp_ServerComm", "Request failed" + json.toString());
-		//		System.out.println(":2");
+				System.out.println(":2");
 
 			}
 		} catch (Exception e) {
 			Log.d("DemoApp_ServerComm", "Request failed" + e);
+			Log.e("ERROR", "json:" + json);
+			
 			e.printStackTrace();
-		//	System.out.println(":3");
+			System.out.println(":3");
 			
 			
 			/*

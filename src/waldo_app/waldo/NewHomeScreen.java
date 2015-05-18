@@ -102,7 +102,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	// hold the registration ID of the user
 	String regid;
-	String targetID = "nothing";//APA91bGhtJwtxwvFSbq0GLk1lbuL_D92jJTjojfFs4wbg_bEdc_Q_gqt0AJEauUG55YdvQpEuxcBop6Yb4iKYb3RjKXtTJSAollo8EwgtZxvkkqXoQTMwOxxX5NVXFM3JXE6L6q08xa6rh9En9AK8S5kRJcQ7fxQ";
+	String targetID = "APA91bGhtJwtxwvFSbq0GLk1lbuL_D92jJTjojfFs4wbg_bEdc_Q_gqt0AJEauUG55YdvQpEuxcBop6Yb4iKYb3RjKXtTJSAollo8EwgtZxvkkqXoQTMwOxxX5NVXFM3JXE6L6q08xa6rh9En9AK8S5kRJcQ7fxQ";
 	String message = "This is a test GCM message!!";
 	private String locationSenderId;
 	private String locationSenderTag;
@@ -273,7 +273,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 	
 	public void onClickUserProfile(View view) {
-		if (geoStatus == 1 || geoStatus == 4){
+		if (GeofencingService.geoStatus == 1 || GeofencingService.geoStatus == 4){
 			Toast.makeText(this, "You Are Currently On Campus", Toast.LENGTH_LONG).show();
 		} else {
 			Toast.makeText(this, "You Are Currently Not On Campus", Toast.LENGTH_LONG).show();
@@ -305,7 +305,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			Toast.makeText(this, "Location request was sent to: " + MainListAdapter.items.get(position).contact_name, Toast.LENGTH_SHORT).show();
 			view.setId(2);
 			
-			sendGcmLocationRquest(view);
+			sendGcmLocationRquest();
 			
 			MainListAdapter.items.get(position).icon_status = IconStatus.request_sent;
 			myAdapter.notifyDataSetChanged();
@@ -524,7 +524,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	/*------------------------------------------ Send a GCM location request. --------------------------------------------------*/
-	public void sendGcmLocationRquest(final View view) {
+	public void sendGcmLocationRquest() {
 		
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		System.out.println("the registration id: " + regid);
