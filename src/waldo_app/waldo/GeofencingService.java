@@ -7,7 +7,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.facebook.internal.Utility;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
@@ -23,7 +22,6 @@ import android.app.Service;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.provider.SyncStateContract.Helpers;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;

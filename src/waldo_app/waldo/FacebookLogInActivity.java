@@ -42,6 +42,7 @@ import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 
 
+
 public class FacebookLogInActivity extends FragmentActivity implements ServerAsyncParent{
 
 	/*private static final String PERMISSION = "publish_actions";

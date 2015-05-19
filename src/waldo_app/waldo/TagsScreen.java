@@ -15,7 +15,6 @@ import waldo_app.waldo.infrastructure.TagListCreator;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.ActionBar.LayoutParams;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -210,12 +209,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		// We need to get the instance of the LayoutInflater
 		LayoutInflater inflater = (LayoutInflater) TagsScreen.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.activity_add_tag_popup, (ViewGroup) findViewById(R.id.add_tag_popup));
-
-		//pwindo = new PopupWindow(layout, 700, 500, false);
-		//pwindo = new PopupWindow(layout,LayoutParams.WRAP_CONTENT,  LayoutParams.WRAP_CONTENT, false);
-		
 		pwindo = new PopupWindow(layout, (int)(NewHomeScreen.Width/1.1), (int)(NewHomeScreen.Height/2.5), false);
-		
 		
 		pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
 		btnClosePopup = (ImageButton) layout.findViewById(R.id.btn_close_add_Tag);
@@ -224,7 +218,6 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		btnSendTag.setOnClickListener(send_tag_listener);
 		tagEdit = (EditText) layout.findViewById(R.id.searchBoxAdd);
 
-		
 		// blur background and disable layout
 		blur_layout.getForeground().setAlpha(190);
 		pwindo.setFocusable(true);
