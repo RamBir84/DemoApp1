@@ -14,15 +14,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import waldo_app.waldo.NewHomeScreen;
-import waldo_app.waldo.TagsScreen;
-import waldo_app.waldo.infrastructure.MainListCreator;
-
-
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -63,7 +56,6 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 		try {
 
 			url = params[0];
-			System.out.println("url: " + url);
 			HttpResponse httpResponse;
 			HttpRequestBase httpMethod;
 			// create http request
@@ -75,9 +67,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 				String paramString = URLEncodedUtils.format(requestParams, "utf-8");
 				httpMethod = new HttpGet(url + "?" + paramString);
 			}
-
 			DefaultHttpClient httpClient = new DefaultHttpClient();
-
 			//Test print
 			Log.v("http_to_server", httpMethod.toString());
 			
@@ -98,7 +88,6 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 
 			is.close();
 			json = sb.toString();
-			System.out.println("json:" + json);
 			// try parse the string to a JSON object
 			jObj = new JSONObject(json);
 
@@ -108,32 +97,14 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 			if (success == 1) {
 				isRequestSucceeded = true;
 				Log.d("DemoApp_ServerComm", "Request succeeded: " + json.toString());
-				System.out.println(":1");
 			} else {
 				// failed to update product
 				Log.d("DemoApp_ServerComm", "Request failed" + json.toString());
-				System.out.println(":2");
 
 			}
 		} catch (Exception e) {
 			Log.d("DemoApp_ServerComm", "Request failed" + e);
-			Log.e("ERROR", "json:" + json);
-			
 			e.printStackTrace();
-			System.out.println(":3");
-			
-			
-			/*
-			// the problem 
-			if (method == "POST"){
-			NewHomeScreen home = (NewHomeScreen)parentActivity;
-		//	home.settings = home.getSharedPreferences("UserInfo", 0);
-		//	home.UserId = home.settings.getString("uid", "No uid");
-		//	new MainListCreator(home.UserId, home);
-			home.NotifyDataChanged();
-		//	home.sendGcmLocationRquest();
-			}
-			*/
 		}
 		return isRequestSucceeded;
 	}
@@ -143,7 +114,6 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 		/*if (dialog.isShowing()) {
 			dialog.dismiss();
 		}*/
-
 		if (isRequestSucceeded) {
 			parentActivity.doOnPostExecute(jObj);
 		} else {
@@ -154,5 +124,4 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 			Log.v("Server_Comm", text + "To:" + url + requestParams.toString());
 		}
 	}
-
 }

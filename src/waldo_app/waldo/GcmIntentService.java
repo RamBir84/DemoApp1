@@ -66,7 +66,6 @@ public class GcmIntentService extends IntentService {
 	For example: 2,301633590,or bokobza,in some place.
 */
 	private void sendNotification(String msg) {
-		System.out.println(":2");
 		char type;
 		String id, name;
 		String tag = "";

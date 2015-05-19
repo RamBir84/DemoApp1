@@ -3,7 +3,7 @@
     android:id="@+id/tagScreenFrame"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:foreground="@drawable/bg_blur"
+    android:foreground="@color/transparent"
     android:orientation="vertical"
     android:weightSum="100" >
 

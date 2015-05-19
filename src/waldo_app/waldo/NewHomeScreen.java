@@ -16,9 +16,12 @@ import waldo_app.waldo.infrastructure.IconStatus;
 import waldo_app.waldo.infrastructure.ListItem;
 import waldo_app.waldo.infrastructure.MainListAdapter;
 import waldo_app.waldo.infrastructure.MainListCreator;
+<<<<<<< Updated upstream
 import waldo_app.waldo.infrastructure.CircleImageView;
 import waldo_app.waldo.helpers.ServerAsyncParent;
 import waldo_app.waldo.helpers.ServerCommunicator;
+=======
+>>>>>>> Stashed changes
 
 import android.app.Activity;
 import android.app.ActionBar.LayoutParams;
@@ -58,12 +61,39 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.HttpMethod;
+import com.google.android.gms.appdatasearch.GetRecentContextCall.Response;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Request;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Picasso.LoadedFrom;
+
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookRequestError;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.share.ShareApi;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareDialog;
+
+
+
+
 
 
 public class NewHomeScreen extends Activity implements ServerAsyncParent {
@@ -85,8 +115,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	public String UserId;
 	public SharedPreferences settings = null;
 	public static int Width, Height;
-	
-//some changess - and another changes
+
+	// some changess - and another changes
 	// GCM fields
 	public static final String EXTRA_MESSAGE = "message";
 	public static final String PROPERTY_REG_ID = "registration_id";
@@ -109,29 +139,33 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	String message = "This is a test GCM message!!";
 	private String locationSenderId;
 	private String locationSenderTag;
-	
+
 	private int geoStatus;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+<<<<<<< Updated upstream
 		
 /*---------------------------------------------------------- Start geofencing service --------------------------------------------------------------*/
 		
+=======
+
+		// Start geofencing
+>>>>>>> Stashed changes
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
 		}
-		
-		//User profile - set border color
+
+		// User profile - set border color
 		geoStatus = GeofencingService.geoStatus;
-		if (geoStatus == 1 || geoStatus == 4){
+		if (geoStatus == 1 || geoStatus == 4) {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
 		} else {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
 		}
-		
-		
-		if (getIntent().getExtras() != null){
-			locationSenderId = getIntent().getExtras().getString("user_id");	
+
+		if (getIntent().getExtras() != null) {
+			locationSenderId = getIntent().getExtras().getString("user_id");
 			locationSenderTag = getIntent().getExtras().getString("tag");
 		}
 		// Set the activity, search box and blur for popup mode
@@ -139,22 +173,23 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		blur_layout = (FrameLayout) findViewById(R.id.newScreenFrame);
 		blur_layout.getForeground().setAlpha(0);
 		searchBoxLayout = (LinearLayout) findViewById(R.id.topBarMain);
-		context = getApplicationContext();		
+		context = getApplicationContext();
 		settings = getSharedPreferences("UserInfo", 0);
 		UserId = settings.getString("uid", "No uid");
 		
 		new MainListCreator(UserId, this);
-		
+
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
 		Width = size.x;
 		Height = size.y;
-		
+
 		/*--------------------------------------------------------------- GCM ----------------------------------------------------------------------------*/
 		// mDisplay = (TextView) findViewById(R.id.display);
 
-		// Check device for Play Services APK. If check succeeds, proceed with GCM registration.
+		// Check device for Play Services APK. If check succeeds, proceed with
+		// GCM registration.
 		if (checkPlayServices()) {
 			gcm = GoogleCloudMessaging.getInstance(this);
 			regid = getRegistrationId(context);
@@ -165,16 +200,16 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			Log.i(TAG, "No valid Google Play Services APK found.");
 		}
 		/*
-		// Print MY ID
-		Toast.makeText(this, regid, Toast.LENGTH_LONG).show();
-		Log.v("REGID", regid);
-		*/
+		 * // Print MY ID Toast.makeText(this, regid, Toast.LENGTH_LONG).show();
+		 * Log.v("REGID", regid);
+		 */
 		/*---------------------------------------------------------- Geofencing status --------------------------------------------------------------*/
-		
+
 		// Set profile picture
-		String fb_url = "https://graph.facebook.com/" + UserId + "/picture?type=large";
+		String fb_url = "https://graph.facebook.com/" + UserId
+				+ "/picture?type=large";
 		CircleImageView userProfile = (CircleImageView) findViewById(R.id.user_profile);
-	    Picasso.with(context).load(fb_url).into(userProfile);
+		Picasso.with(context).load(fb_url).into(userProfile);
 
 		/*---------------------------------------------------------- Handling search mode --------------------------------------------------------------*/
 		textLength = 0;
@@ -183,23 +218,27 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			public void afterTextChanged(Editable s) {
 			}
 
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
 			}
 
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if (usersDataLoaded){
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				if (usersDataLoaded) {
 					// get the text in the EditText
 					String searchString = searchBox.getText().toString();
 					textLength = searchString.length();
-					
+
 					// clear the initial data set
 					updatedUserData.clear();
 					for (int i = 0; i < userData.size(); i++) {
-						
+
 						String name = userData.get(i).contact_name;
 						if (textLength <= name.length()) {
-							// compare the String in EditText with Names in the ArrayList
-							if (searchString.equalsIgnoreCase((String) name.substring(0, textLength))) {
+							// compare the String in EditText with Names in the
+							// ArrayList
+							if (searchString.equalsIgnoreCase((String) name
+									.substring(0, textLength))) {
 								updatedUserData.add(userData.get(i));
 							}
 						}
@@ -208,8 +247,11 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 				}
 			}
 		});
-	}
+		
+		
+		
 
+<<<<<<< Updated upstream
 	@Override
     protected void onStart() {
         super.onStart();
@@ -246,10 +288,69 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			locationSenderTag = intent.getExtras().getString("tag");
 		}
 	}
+=======
+		
+		
+		
+		
+		
+	}
+	
+>>>>>>> Stashed changes
 	
 	
+	public void facebookList(){
+		
+		/*
+		new Request(Session.getActiveSession(), 
+				matchedUser.getFacebookId(),
+				params, 
+				HttpMethod.GET,
+				new Request.Callback() {
+					
+					@Override
+					public void onCompleted(Response response) {
+						String message = "Request received";
+						String mutualFriendsCount = "0";
+						JSONArray mutualFriendsData = null;
+
+						GraphObject responseGraphObject = response.getGraphObject();
+						FacebookRequestError error = response.getError();
+
+						if (responseGraphObject != null) {
+							JSONObject userObj = responseGraphObject.getInnerJSONObject();
+							
+							try {
+								if (userObj.has("context")) {
+									mutualFriendsCount = userObj.getJSONObject("context")
+											.getJSONObject("mutual_friends")
+											.getJSONObject("summary")
+											.getString("total_count");
+									
+									mutualFriendsData = userObj.getJSONObject("context")
+											.getJSONObject("mutual_friends")
+											.getJSONArray("data");
+								}							
+							} catch (JSONException e) {
+								// TODO Add error screen?		
+								e.printStackTrace();
+							}
+						} else if (error != null) {
+							message = "Error getting request info";
+						}
+						
+						arrangeResults(matchedUser, mutualFriendsCount, mutualFriendsData, index);
+					}			
+				}).executeAsync();
+				*/
+		
+	}
+	
+	
+
 	public void onDataLoadeFromServer(ArrayList<ListItem> listOfUsers) {
 		System.out.println("odlfs1");
+<<<<<<< Updated upstream
 		// TODO Auto-generated method stub
 		/**----------------------    TEST    ------------------------**/
 		//listOfUsers.get(1).icon_status = IconStatus.request_received;
@@ -257,21 +358,28 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		// TODO Auto-generated method stub
 		
 		
+=======
+		/** ---------------------- TEST ------------------------ **/
+		// listOfUsers.get(1).icon_status = IconStatus.request_received;
+		/** ---------------------- TEST ------------------------ **/
+
+>>>>>>> Stashed changes
 		int locationSenderIndex = 0;
-		
+
 		if (locationSenderId != null && locationSenderTag != null) {
-			
+
 			ArrayList<ListItem> tmpListOfUsers = new ArrayList<ListItem>();
-			
+
 			for (int i = 0; i < listOfUsers.size(); i++) {
-				if (listOfUsers.get(i).uId.equalsIgnoreCase(locationSenderId)){
+				if (listOfUsers.get(i).uId.equalsIgnoreCase(locationSenderId)) {
 					listOfUsers.get(i).Location = locationSenderTag;
 					listOfUsers.get(i).icon_status = IconStatus.answer_received;
 					locationSenderIndex = i;
 				}
 			}
 			if (locationSenderIndex != 0) {
-				ListItem locationSenderItem = listOfUsers.get(locationSenderIndex);
+				ListItem locationSenderItem = listOfUsers
+						.get(locationSenderIndex);
 				listOfUsers.remove(locationSenderIndex);
 				tmpListOfUsers.add(locationSenderItem);
 				for (int i = 0; i < listOfUsers.size(); i++) {
@@ -280,18 +388,17 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 				listOfUsers = tmpListOfUsers;
 			}
 		}
-		
-		
+
 		userData = listOfUsers;
 		updatedUserData = new ArrayList<ListItem>(userData);
-		
+
 		mainContainer = (ListView) findViewById(R.id.mainContainer);
-		
+
 		baseListAdapter = new MainListAdapter(this, userData);
 		adapter = new MainListAdapter(this, updatedUserData);
 		mainContainer.setAdapter(adapter);
 		myAdapter = adapter;
-		
+
 		usersDataLoaded = !usersDataLoaded;
 	}
 
@@ -302,25 +409,26 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		finish();
 	}
 
-	
-	public void NotifyDataChanged(){
+	public void NotifyDataChanged() {
 		myAdapter.notifyDataSetChanged();
 	}
-	
+
 	// Menu Button
 	public void onClickMenu(View view) {
 		//Toast.makeText(this, "Open menu", Toast.LENGTH_SHORT).show();
 		// triggerNotification();
-		// *********
 		Intent i = new Intent(getApplicationContext(), SettingsScreen.class);
 		startActivityForResult(i, SETTINGS_RESULT);
 	}
-	
+
 	public void onClickUserProfile(View view) {
-		if (GeofencingService.geoStatus == 1 || GeofencingService.geoStatus == 4){
-			Toast.makeText(this, "You Are Currently On Campus", Toast.LENGTH_LONG).show();
+		if (GeofencingService.geoStatus == 1
+				|| GeofencingService.geoStatus == 4) {
+			Toast.makeText(this, "You Are Currently On Campus",
+					Toast.LENGTH_LONG).show();
 		} else {
-			Toast.makeText(this, "You Are Currently Not On Campus", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "You Are Currently Not On Campus",
+					Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -340,23 +448,34 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	// Icon button
 	public void onClickListIcon(View view) {
 		position = ((BitmapPosition) view.getTag()).position;
-		
+
 		int viewId = view.getId();
-		
+
 		switch (viewId) {
 		case 1:// Online
 			view.setSelected(true);
-			Toast.makeText(this, "Location request was sent to: " + MainListAdapter.items.get(position).contact_name, Toast.LENGTH_SHORT).show();
+			Toast.makeText(
+					this,
+					"Location request was sent to: "
+							+ MainListAdapter.items.get(position).contact_name,
+					Toast.LENGTH_SHORT).show();
 			view.setId(2);
+<<<<<<< Updated upstream
 			
 			sendGcmLocationRquest(view);
 			
+=======
+
+			sendGcmLocationRquest();
+
+>>>>>>> Stashed changes
 			MainListAdapter.items.get(position).icon_status = IconStatus.request_sent;
 			myAdapter.notifyDataSetChanged();
 			break;
-			
+
 		case 2:// Request_sent
-			Toast.makeText(this, "Location request was already sent", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Location request was already sent",
+					Toast.LENGTH_SHORT).show();
 			myAdapter.notifyDataSetChanged();
 			break;
 
@@ -369,7 +488,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			MainListAdapter.items.get(position).icon_status = IconStatus.online;
 			myAdapter.notifyDataSetChanged();
 			break;
-			
+
 		case 4:// Answer_received
 			view.setSelected(true);
 			view.setId(1);
@@ -377,12 +496,13 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			MainListAdapter.items.get(position).icon_status = IconStatus.online;
 			myAdapter.notifyDataSetChanged();
 			break;
-			
+
 		default:// Offline
-			Toast.makeText(this, "The user is currently not on campus",	Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "The user is currently not on campus",
+					Toast.LENGTH_SHORT).show();
 			break;
 		}
-		
+
 	}
 
 	// ListProfile Button
@@ -395,14 +515,16 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	private void initiatePopupWindow(View view) {
 
 		// We need to get the instance of the LayoutInflater
-		LayoutInflater inflater = (LayoutInflater) NewHomeScreen.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View layout = inflater.inflate(R.layout.activity_answer_popup,(ViewGroup) findViewById(R.id.popup_element));
+		LayoutInflater inflater = (LayoutInflater) NewHomeScreen.this
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.activity_answer_popup,
+				(ViewGroup) findViewById(R.id.popup_element));
 
-	//	pwindo = new PopupWindow(layout,700, 500, false);
-	//  pwindo = new PopupWindow(layout,LayoutParams.WRAP_CONTENT,  LayoutParams.WRAP_CONTENT, false);
-		pwindo = new PopupWindow(layout, (int)(Width/1.1), (int)(Height/2.5), false);
+		// pwindo = new PopupWindow(layout,700, 500, false);
+		pwindo = new PopupWindow(layout, (int) (Width / 1.1),
+				(int) (Height / 2.5), false);
 		pwindo.showAtLocation(layout, Gravity.CENTER, 0, 0);
-		
+
 		btnClosePopup = (ImageButton) layout.findViewById(R.id.btn_close_popup);
 		btnClosePopup.setOnClickListener(cancel_button_click_listener);
 		// blur background and disable layout
@@ -411,30 +533,35 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		pwindo.update();
 
 		// Set the contact name
-		TextView contactName = (TextView) layout.findViewById(R.id.answer_contact_name);
+		TextView contactName = (TextView) layout
+				.findViewById(R.id.answer_contact_name);
 		contactName.setText(MainListAdapter.items.get(position).contact_name);
 
 		// Set date and date
-		TextView contactDate = (TextView) layout.findViewById(R.id.answer_location_time);
+		TextView contactDate = (TextView) layout
+				.findViewById(R.id.answer_location_time);
 		contactDate.setText(MainListAdapter.items.get(position).tagDateTime);
-/*
-		// Set status message
-		TextView contactStatus = (TextView) layout.findViewById(R.id.answer_status);
-		if (view.getId() == 5) {
-			contactStatus.setText("User is currently not on campus");
-		} else {
-			contactStatus.setText("User is currently on campus");
-		}
-*/
+		/*
+		 * // Set status message TextView contactStatus = (TextView)
+		 * layout.findViewById(R.id.answer_status); if (view.getId() == 5) {
+		 * contactStatus.setText("User is currently not on campus"); } else {
+		 * contactStatus.setText("User is currently on campus"); }
+		 */
 		// Set the contact location
-		TextView Location = (TextView) layout.findViewById(R.id.answer_location);
+		TextView Location = (TextView) layout
+				.findViewById(R.id.answer_location);
 		Location.setText(MainListAdapter.items.get(position).Location);
 
 		// Set the profile picture
-		ImageView profilePicture = (ImageView) layout.findViewById(R.id.answer_profile_picture);
-		Drawable profileImageAsDrawable = new BitmapDrawable(NewHomeScreen.this.getResources(),((BitmapPosition) view.getTag()).bitmap);
+		ImageView profilePicture = (ImageView) layout
+				.findViewById(R.id.answer_profile_picture);
+		Drawable profileImageAsDrawable = new BitmapDrawable(
+				NewHomeScreen.this.getResources(),
+				((BitmapPosition) view.getTag()).bitmap);
 		profilePicture.setImageDrawable(profileImageAsDrawable);
-		Picasso.with(NewHomeScreen.this).load(MainListAdapter.items.get(position).profile_pic).into(profilePicture);
+		Picasso.with(NewHomeScreen.this)
+				.load(MainListAdapter.items.get(position).profile_pic)
+				.into(profilePicture);
 	}
 
 	private OnClickListener cancel_button_click_listener = new OnClickListener() {
@@ -473,7 +600,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	/**
 	 * Stores the registration ID and the app versionCode in the application's
 	 * {@code SharedPreferences}.
-	 *
+	 * 
 	 * @param context
 	 *            application's context.
 	 * @param regId
@@ -494,11 +621,12 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	 * is one.
 	 * <p>
 	 * If result is empty, the app needs to register.
-	 *
+	 * 
 	 * @return registration ID, or empty string if there is no existing
 	 *         registration ID.
 	 */
-	// this method checks if the user already registered, and return his registration Id
+	// this method checks if the user already registered, and return his
+	// registration Id
 	private String getRegistrationId(Context context) {
 		final SharedPreferences prefs = getGcmPreferences(context);
 		String registrationId = prefs.getString(PROPERTY_REG_ID, "");
@@ -568,21 +696,28 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	/*------------------------------------------ Send a GCM location request. --------------------------------------------------*/
+<<<<<<< Updated upstream
 	public void sendGcmLocationRquest(final View view) {
+=======
+
+	/*
+	 * The msg fields: 1. type of message 2. ID 3. name 4. tag (empty in type
+	 * '1') For example: 2,301633590,or bokobza,in some place.
+	 */
+	public void sendGcmLocationRquest() {
+
+>>>>>>> Stashed changes
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		System.out.println("the registration id: " + regid);
-		
+
 		targetID = MainListAdapter.items.get(position).gcm_id;
-		
-	/*  The msg fields: 1. type of message 2. ID 3. name 4. tag (empty in type '1')
-		For example: 2,301633590,or bokobza,in some place.*/
-		
+
 		StringBuilder gcm_message = new StringBuilder();
-		gcm_message.append(1).append(",")
-					.append(regid).append(",")
-					.append(settings.getString("userName", "Your friend")).append(".");
+		gcm_message.append(1).append(",").append(regid).append(",")
+				.append(settings.getString("userName", "Your friend"))
+				.append(".");
 		message = gcm_message.toString();
-		
+
 		/* here we put the reciever id" */
 		params.add(new BasicNameValuePair("target", targetID));
 		/* here we put the message we want to sent" */
@@ -605,9 +740,11 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 		if (gcmResponsStatus == 1) {
 			/*--Do here the change in the friend list item--*/
-			Log.v("GCM", "Send location request success!!" + " Status: " + gcmResponsStatus + " " + jObj.toString());
+			Log.v("GCM", "Send location request success!!" + " Status: "
+					+ gcmResponsStatus + " " + jObj.toString());
 		} else {
-			Log.v("GCM", "Send location request failed!!" + " Status: " + gcmResponsStatus + " " + jObj.toString());
+			Log.v("GCM", "Send location request failed!!" + " Status: "
+					+ gcmResponsStatus + " " + jObj.toString());
 		}
 	}
 
@@ -649,19 +786,19 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	 */
 	private void sendRegistrationIdToBackend() {
 
-			ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("userId", UserId));
-			params.add(new BasicNameValuePair("gcm_id", regid));
-			new ServerCommunicator(new ServerAsyncParent() {
-				
-				@Override
-				public void doOnPostExecute(JSONObject jObj) {
-					// TODO Auto-generated method stub
-					
-				}
-			}, params, ServerCommunicator.METHOD_POST)
-					.execute("http://ram.milab.idc.ac.il/app_send_gcmID.php");
-		
+		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("userId", UserId));
+		params.add(new BasicNameValuePair("gcm_id", regid));
+		new ServerCommunicator(new ServerAsyncParent() {
+
+			@Override
+			public void doOnPostExecute(JSONObject jObj) {
+				// TODO Auto-generated method stub
+
+			}
+		}, params, ServerCommunicator.METHOD_POST)
+				.execute("http://ram.milab.idc.ac.il/app_send_gcmID.php");
+
 	}
 
 	// check if the geofencingService is running
@@ -675,29 +812,38 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}
 		return false;
 	}
-	
-	
-	private class ExtendedTarget implements Target {
 
+	private class ExtendedTarget implements Target {
 		CircleImageView refButton;
-		
-		
+
 		public ExtendedTarget(CircleImageView refButton) {
 			this.refButton = refButton;
 		}
+
 		@Override
 		public void onBitmapFailed(Drawable arg0) {
 			// TODO Auto-generated method stub
 		}
+
 		@Override
 		public void onBitmapLoaded(Bitmap b, LoadedFrom arg1) {
-			Drawable profileImageAsDrawable = new BitmapDrawable(context.getResources(), b);
+			Drawable profileImageAsDrawable = new BitmapDrawable(
+					context.getResources(), b);
 			refButton.setImageDrawable(profileImageAsDrawable);
-			refButton.setTag(new BitmapPosition(b, (Integer) refButton.getTag())); // Put the bitmap and the position in refButton
+			refButton
+					.setTag(new BitmapPosition(b, (Integer) refButton.getTag())); // Put
+																					// the
+																					// bitmap
+																					// and
+																					// the
+																					// position
+																					// in
+																					// refButton
 		}
+
 		@Override
 		public void onPrepareLoad(Drawable arg0) {
 		}
 	}
-	
+
 }
