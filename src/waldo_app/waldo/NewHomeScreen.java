@@ -12,19 +12,22 @@ import org.json.JSONObject;
 import waldo_app.waldo.helpers.ServerAsyncParent;
 import waldo_app.waldo.helpers.ServerCommunicator;
 import waldo_app.waldo.infrastructure.BitmapPosition;
-import waldo_app.waldo.infrastructure.CircleImageView;
 import waldo_app.waldo.infrastructure.IconStatus;
 import waldo_app.waldo.infrastructure.ListItem;
 import waldo_app.waldo.infrastructure.MainListAdapter;
 import waldo_app.waldo.infrastructure.MainListCreator;
-
+import waldo_app.waldo.infrastructure.CircleImageView;
+import waldo_app.waldo.helpers.ServerAsyncParent;
+import waldo_app.waldo.helpers.ServerCommunicator;
 
 import android.app.Activity;
+import android.app.ActionBar.LayoutParams;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
@@ -90,7 +93,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	private static final String PROPERTY_APP_VERSION = "appVersion";
 	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-	// Project ID
+	// This is the project ID number
 	String SENDER_ID = "439243586723";
 
 	// Tag used on log messages.
@@ -112,7 +115,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		// Start geofencing
+/*---------------------------------------------------------- Start geofencing service --------------------------------------------------------------*/
+		
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
 		}
@@ -138,6 +142,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		context = getApplicationContext();		
 		settings = getSharedPreferences("UserInfo", 0);
 		UserId = settings.getString("uid", "No uid");
+		
 		new MainListCreator(UserId, this);
 		
 		Display display = getWindowManager().getDefaultDisplay();
@@ -205,13 +210,52 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		});
 	}
 
+	@Override
+    protected void onStart() {
+        super.onStart();
+         
+        // Store our shared preference
+        SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
+        Editor ed = sp.edit();
+        ed.putBoolean("active", true);
+        ed.commit();
+    }
+     
+    @Override
+    protected void onStop() {
+        super.onStop();
+         
+        // Store our shared preference
+        SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
+        Editor ed = sp.edit();
+        ed.putBoolean("active", false);
+        ed.commit();
+         
+    }
+	
+	
+	
+	@Override
+	protected void onNewIntent(Intent intent) {
+		// TODO Auto-generated method stub
+		super.onNewIntent(intent);
+		//targetID = intent.getExtras().getString("gcm_id");
+		
+		if (intent.getExtras() != null){
+			locationSenderId = intent.getExtras().getString("user_id");	
+			locationSenderTag = intent.getExtras().getString("tag");
+		}
+	}
 	
 	
 	public void onDataLoadeFromServer(ArrayList<ListItem> listOfUsers) {
 		System.out.println("odlfs1");
+		// TODO Auto-generated method stub
 		/**----------------------    TEST    ------------------------**/
 		//listOfUsers.get(1).icon_status = IconStatus.request_received;
 		/**----------------------    TEST    ------------------------**/
+		// TODO Auto-generated method stub
+		
 		
 		int locationSenderIndex = 0;
 		
@@ -265,7 +309,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	
 	// Menu Button
 	public void onClickMenu(View view) {
-		Toast.makeText(this, "Open menu", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, "Open menu", Toast.LENGTH_SHORT).show();
 		// triggerNotification();
 		// *********
 		Intent i = new Intent(getApplicationContext(), SettingsScreen.class);
@@ -305,7 +349,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			Toast.makeText(this, "Location request was sent to: " + MainListAdapter.items.get(position).contact_name, Toast.LENGTH_SHORT).show();
 			view.setId(2);
 			
-			sendGcmLocationRquest();
+			sendGcmLocationRquest(view);
 			
 			MainListAdapter.items.get(position).icon_status = IconStatus.request_sent;
 			myAdapter.notifyDataSetChanged();
@@ -524,8 +568,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	/*------------------------------------------ Send a GCM location request. --------------------------------------------------*/
-	public void sendGcmLocationRquest() {
-		
+	public void sendGcmLocationRquest(final View view) {
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		System.out.println("the registration id: " + regid);
 		

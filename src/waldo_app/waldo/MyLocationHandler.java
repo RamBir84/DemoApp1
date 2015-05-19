@@ -10,16 +10,12 @@ import org.json.JSONObject;
 import waldo_app.waldo.helpers.ServerAsyncParent;
 import waldo_app.waldo.helpers.ServerCommunicator;
 
-
 import com.google.android.gms.location.GeofencingEvent;
-
-
-
-
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 //import android.content.SharedPreferences;
 import android.widget.Toast;
 
@@ -44,15 +40,15 @@ public class MyLocationHandler extends IntentService implements ServerAsyncParen
 		if ((GeofencingService.geoStatus == 1) || (GeofencingService.geoStatus == 4)) {
 			
 			this.sendCheckInToServer(settings.getString("uid", "no uid"), onCampus);
-			Toast.makeText(this, "AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, "AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
 			
 		} else if (GeofencingService.geoStatus == 2) {
 			
 			this.sendCheckInToServer(settings.getString("uid", "no uid"), !onCampus);
-			Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
 			
 		} else {
-			Toast.makeText(this, "AUTO : geoStatus NULL", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, "AUTO : geoStatus NULL", Toast.LENGTH_SHORT).show();
 		}
 	}
 	
@@ -70,13 +66,15 @@ public class MyLocationHandler extends IntentService implements ServerAsyncParen
 	public void doOnPostExecute(JSONObject jObj) {
 		try {
 			if (jObj.getInt("success") == 1){
-				Toast.makeText(this,"status was updated successfuly", Toast.LENGTH_LONG).show();
+				//Toast.makeText(this,"status was updated successfuly", Toast.LENGTH_LONG).show();
 			}else {
-				Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
+				//Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
+				Log.e("Geo_Status", "status FAILED to updated " + jObj.toString());
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
+			//Toast.makeText(this,"status FAILED to updated on exaption", Toast.LENGTH_LONG).show();
+			Log.e("Geo_Status", "status FAILED to updated on exaption " + jObj.toString());
 		}
 	}
 }

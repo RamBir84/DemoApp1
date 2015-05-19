@@ -59,7 +59,8 @@
             android:name="waldo_app.waldo.NewHomeScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing" >
+            android:windowSoftInputMode="adjustNothing"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name="waldo_app.waldo.TagsScreen"

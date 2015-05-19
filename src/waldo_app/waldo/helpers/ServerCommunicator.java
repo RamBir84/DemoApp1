@@ -101,6 +101,7 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 			System.out.println("json:" + json);
 			// try parse the string to a JSON object
 			jObj = new JSONObject(json);
+
 			// check json success tag
 			int success = jObj.getInt("success");
 

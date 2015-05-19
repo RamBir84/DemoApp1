@@ -13,9 +13,9 @@ import waldo_app.waldo.infrastructure.ListTagItem;
 import waldo_app.waldo.infrastructure.TagListAdapter;
 import waldo_app.waldo.infrastructure.TagListCreator;
 
-
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActionBar.LayoutParams;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -24,6 +24,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -40,9 +41,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
-
-
-
 
 public class TagsScreen extends Activity implements ServerAsyncParent {
 	private ListView mainTagContainer;
@@ -76,11 +74,32 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		
 		//targetID = savedInstanceState.getString("gcm_id");
 		
+		settings = getSharedPreferences("UserInfo", 0);
 		
 		new TagListCreator(userLocation, this);
-
-
 	}
+	
+	@Override
+    protected void onStart() {
+        super.onStart();
+         
+        // Store our shared preference
+        SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
+        Editor ed = sp.edit();
+        ed.putBoolean("active", true);
+        ed.commit();
+    }
+     
+    @Override
+    protected void onStop() {
+        super.onStop();
+         
+        // Store our shared preference
+        SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
+        Editor ed = sp.edit();
+        ed.putBoolean("active", false);
+        ed.commit();         
+    }
 	
 	@Override
 	protected void onNewIntent(Intent intent) {
@@ -105,7 +124,11 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		mainTagContainer = (ListView)findViewById(R.id.mainTagContainer);
 		ListAdapter listAdapter = new TagListAdapter(this, tagsInUserLocation);
 		mainTagContainer.setAdapter(listAdapter);
-
+	
+		for (int i = 0; i < fakeTags.size(); i++) {
+			System.out.println("tag: " + fakeTags.get(i).tag);
+			System.out.println("tag location: " + fakeTags.get(i).tag_location.getLatitude() + ", " + fakeTags.get(i).tag_location.getLongitude());
+		}
 	}
 	
 	
@@ -159,21 +182,22 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 				int gcmResponsStatus = 0;
 
 				try {
-					gcmResponsStatus = jObj.getInt("header");
+					gcmResponsStatus = jObj.getInt("success");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 
-				if (gcmResponsStatus == 200) {
+				if (gcmResponsStatus == 1) {
 					/*--Do here the change in the friend list item--*/
+					Log.v("GCM", "Send tag respons success!!" + " Status: " + gcmResponsStatus + " " + jObj.toString());
 				} else {
-					Log.v("GCM", "Send location request failed" + jObj.toString());
+					Log.v("GCM", "Send tag respons failed!!" + " Status: " + gcmResponsStatus + " " + jObj.toString());
 				}
 			}
 		}, params, ServerCommunicator.METHOD_POST)
 				.execute("http://ram.milab.idc.ac.il/GCM_send_message.php");
 		
-		Toast.makeText(this, TagListAdapter.items.get(position).tag, Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, TagListAdapter.items.get(position).tag, Toast.LENGTH_SHORT).show();
 		// **Have to Add - change the data to: data.icon_status = "online"
 		startActivity(new Intent(this, NewHomeScreen.class));
 		finish();
@@ -230,7 +254,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 			
 			// Send the tag
 			sendTag(tag, userLocation);
-			Toast.makeText(TagsScreen.this, "Tag Was sent: " + tag, Toast.LENGTH_SHORT).show();
+			Toast.makeText(TagsScreen.this, "The new tag: " + tag + " was swent.", Toast.LENGTH_SHORT).show();
 			
 			//fakeTags.add(new ListTagItem(tag,userLocation));
 			startActivity(new Intent(TagsScreen.this, NewHomeScreen.class));
@@ -308,9 +332,9 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		
 		try {
 			if (jObj.getInt("success") == 1){
-				Toast.makeText(this, jObj.getString("message"), Toast.LENGTH_LONG).show();
+				//Toast.makeText(this, jObj.getString("message"), Toast.LENGTH_LONG).show();
 			}else {
-				Toast.makeText(this, jObj.getString("message"), Toast.LENGTH_LONG).show();
+				//Toast.makeText(this, jObj.getString("message"), Toast.LENGTH_LONG).show();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

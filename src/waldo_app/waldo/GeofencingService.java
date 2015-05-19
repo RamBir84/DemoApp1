@@ -7,22 +7,23 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import waldo_app.waldo.helpers.ServerAsyncParent;
-import waldo_app.waldo.helpers.ServerCommunicator;
-
-
+import com.facebook.internal.Utility;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-
+import waldo_app.waldo.helpers.ServerAsyncParent;
+import waldo_app.waldo.helpers.ServerCommunicator;
+import waldo_app.waldo.helpers.Utils;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.SyncStateContract.Helpers;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -59,7 +60,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		geoStatus = -1;
 		geoLatitude = 32.177256142836924;/*idc*////32.16469634171559;*apartment*32.16744820334117;
 		geoLongitude = 34.83560096472502;/*idc*////34.84679650515318;*apartment*34.83503853902221;
-		geoRadius = 5000;
+		geoRadius = 500;
 		geoLocation = new Location("");
 		geoLocation.setLatitude(geoLatitude);
 		geoLocation.setLongitude(geoLongitude);
@@ -93,23 +94,26 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 
 	}
 
-	/** Called when The service is no longer used and is being destroyed */
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
-	}
+   /** Called when The service is no longer used and is being destroyed */
+   @Override
+   public void onDestroy() {
+	   super.onDestroy();
+	   //Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
+   }
 
 
 	@Override
 	public void onConnected(Bundle arg0) {
 		// Toast
 		// Toast.makeText(this, "Service Connected", Toast.LENGTH_SHORT).show();
+		
+/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
 
-		/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
+		checkLocationServices(null);
+		
 		// update user location
 		userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
-
+		
 		// update the distance between userLocation and geoLocation
 		distance = userLocation.distanceTo(geoLocation);
 		/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
@@ -131,7 +135,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		.setRequestId("unique-geofence-id")
 		.setCircularRegion(geoLatitude, geoLongitude, geoRadius)
 		/*coordinate and radius in meters*/ .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
-		.setLoiteringDelay(300000) // check every 300 seconds (5 minutes) (1000 = 1 sec)
+		.setLoiteringDelay(1800000) // check every 30 minutes (1000 = 1 sec)
 		.build());
 		
 		System.out.println("IM HERE!!!!!");
@@ -191,13 +195,23 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 			if (jObj.getInt("success") == 1){
 				//	Toast.makeText(this,"status was updated successfuly", Toast.LENGTH_LONG).show();
 			}else {
-				Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
+				//Toast.makeText(this,"status FAILED to updated", Toast.LENGTH_LONG).show();
 				Log.e("geoServisUpdateFailed", jObj.toString());
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			Toast.makeText(this,"status FAILED to updated on exception", Toast.LENGTH_LONG).show();
+			//Toast.makeText(this,"status FAILED to updated on exception", Toast.LENGTH_LONG).show();
 			Log.e("geoServisUpdateException", jObj.toString() + e.toString());
+		}
+	}
+	
+	public void checkLocationServices(Activity runningActivity) {
+		
+		if (!LocationServices.FusedLocationApi.getLocationAvailability(mGoogleClient).isLocationAvailable()) {
+			if (runningActivity != null && getApplication().getSharedPreferences("OURINFO", MODE_PRIVATE).getBoolean("active", false)) {
+				Utils.displayPromptForEnablingGPS(runningActivity);
+			}
+			
 		}
 	}
 }
