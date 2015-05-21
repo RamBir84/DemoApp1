@@ -87,6 +87,8 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	/** Called when all clients have unbound with unbindService() */
 	@Override
 	public boolean onUnbind(Intent intent) {
+		   sendCheckInToServer(settings.getString("uid", "No uid"), false);
+			Toast.makeText(this, "Service onUnbind", Toast.LENGTH_SHORT).show();
 		return mAllowRebind;
 	}
 
@@ -101,14 +103,12 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
    public void onDestroy() {
 	   super.onDestroy();
 	   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-	 Toast.makeText(this, "Service destroyd", Toast.LENGTH_SHORT).show();
+	// Toast.makeText(this, "Service destroyd", Toast.LENGTH_SHORT).show();
 	   
    }
    
    @Override
 public void onTaskRemoved(Intent rootIntent) {
-	   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-	   Toast.makeText(this, "onTaskRemoved", Toast.LENGTH_SHORT).show();
 	super.onTaskRemoved(rootIntent);
 }
 
@@ -170,13 +170,13 @@ public void onTaskRemoved(Intent rootIntent) {
 	@Override
 	public void onConnectionSuspended(int arg0) {
 		   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-			 Toast.makeText(this, "Service suspended", Toast.LENGTH_SHORT).show();
+	//		 Toast.makeText(this, "Service suspended", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {	
 		   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-			 Toast.makeText(this, "Service failed", Toast.LENGTH_SHORT).show();
+	//		 Toast.makeText(this, "Service failed", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
