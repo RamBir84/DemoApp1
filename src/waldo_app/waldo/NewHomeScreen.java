@@ -1,11 +1,13 @@
 package waldo_app.waldo;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,6 +57,12 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenSource;
+import com.facebook.GraphRequest;
+import com.facebook.GraphRequestBatch;
+import com.facebook.GraphResponse;
+import com.facebook.internal.CollectionMapper.Collection;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -108,7 +116,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	private String locationSenderId;
 	private String locationSenderTag;
 
-	private int geoStatus;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -120,11 +127,12 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}
 
 		// User profile - set border color
-		geoStatus = GeofencingService.geoStatus;
-		if (geoStatus == 1 || geoStatus == 4) {
+		if (GeofencingService.onCampus) {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
+			System.out.println("hey1");
 		} else {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
+			System.out.println("hey2");
 		}
 
 		if (getIntent().getExtras() != null) {
@@ -169,8 +177,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		/*---------------------------------------------------------- Geofencing status --------------------------------------------------------------*/
 
 		// Set profile picture
-		String fb_url = "https://graph.facebook.com/" + UserId
-				+ "/picture?type=large";
+		
+		String fb_url = "https://graph.facebook.com/" + UserId + "/picture?type=large";
 		CircleImageView userProfile = (CircleImageView) findViewById(R.id.user_profile);
 		Picasso.with(context).load(fb_url).into(userProfile);
 
@@ -209,6 +217,10 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 				}
 			}
 		});
+		
+		
+		facebookList();
+		
 	}
 
 
@@ -260,48 +272,79 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 
 	public void facebookList(){
+		/*
+		String applicationId = "421560734690363";
+		String userId = UserId;
+		Collection<String> permissions = null;
+		Collection<String> declinedPermissions = null;
+		AccessTokenSource accessTokenSource = AccessTokenSource.FACEBOOK_APPLICATION_SERVICE;
+		Date expirationTime = null; 
+		Date lastRefreshTime = null;
+			AccessToken access = new AccessToken(accessToken, applicationId, userId, permissions, declinedPermissions, accessTokenSource, expirationTime, lastRefreshTime);
+*/
+		
+		GraphRequest request1 = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
+            @Override
+            public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
+            	System.out.println("getFriendsData onCompleted : jsonArray " + jsonArray);
+            	System.out.println("getFriendsData onCompleted : response " + graphResponse);
+            }
+        });
+        request1.executeAsync();
+		
+		/*
+		AccessToken accessToken = AccessToken.getCurrentAccessToken();
+		
+
+		GraphRequestBatch batch = new GraphRequestBatch(
+				GraphRequest.newMyFriendsRequest(
+						accessToken,
+						new GraphRequest.GraphJSONArrayCallback() {
+							@Override
+							public void onCompleted(
+									JSONArray jsonArray,
+									GraphResponse response) {
+								// Application code for users friends
+								System.out.println("getFriendsData onCompleted : jsonArray " + jsonArray);
+								System.out.println("getFriendsData onCompleted : response " + response);
+								try {
+									JSONObject jsonObject = response.getJSONObject();
+									System.out.println("getFriendsData onCompleted : jsonObject " + jsonObject);
+									JSONObject summary = jsonObject.getJSONObject("summary");
+									System.out.println("getFriendsData onCompleted : summary total_count - " + summary.getString("total_count"));
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						})
+
+				);
+		batch.addCallback(new GraphRequestBatch.Callback() {
+			@Override
+			public void onBatchCompleted(GraphRequestBatch graphRequests) {
+				// Application code for when the batch finishes
+			}
+		});
+		batch.executeAsync();
+
+		Bundle parameters = new Bundle();
+		parameters.putString("fields", "id,name,link,picture");
 
 		/*
-		new Request(Session.getActiveSession(), 
-				matchedUser.getFacebookId(),
-				params, 
-				HttpMethod.GET,
-				new Request.Callback() {
-
-					@Override
-					public void onCompleted(Response response) {
-						String message = "Request received";
-						String mutualFriendsCount = "0";
-						JSONArray mutualFriendsData = null;
-
-						GraphObject responseGraphObject = response.getGraphObject();
-						FacebookRequestError error = response.getError();
-
-						if (responseGraphObject != null) {
-							JSONObject userObj = responseGraphObject.getInnerJSONObject();
-
-							try {
-								if (userObj.has("context")) {
-									mutualFriendsCount = userObj.getJSONObject("context")
-											.getJSONObject("mutual_friends")
-											.getJSONObject("summary")
-											.getString("total_count");
-
-									mutualFriendsData = userObj.getJSONObject("context")
-											.getJSONObject("mutual_friends")
-											.getJSONArray("data");
-								}							
-							} catch (JSONException e) {
-								// TODO Add error screen?		
-								e.printStackTrace();
-							}
-						} else if (error != null) {
-							message = "Error getting request info";
-						}
-
-						arrangeResults(matchedUser, mutualFriendsCount, mutualFriendsData, index);
-					}			
-				}).executeAsync();
+		GraphRequest request = GraphRequest.newMeRequest(
+		        accessToken,
+		        new GraphRequest.GraphJSONObjectCallback() {
+		            @Override
+		            public void onCompleted(
+		                   JSONObject object,
+		                   GraphResponse response) {
+		                // Application code
+		            }
+		        });
+		Bundle parameters = new Bundle();
+		parameters.putString("fields", "id,name,link");
+		request.setParameters(parameters);
+		request.executeAsync();
 		 */
 
 	}
@@ -367,13 +410,15 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	public void onClickUserProfile(View view) {
-		if (GeofencingService.geoStatus == 1
-				|| GeofencingService.geoStatus == 4) {
-			//Toast.makeText(this, "You Are Currently On Campus",Toast.LENGTH_LONG).show();
+		if (GeofencingService.onCampus){
+			Toast.makeText(this, "You Are Currently On Campus",Toast.LENGTH_LONG).show();
+			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
 		} else {
-			//Toast.makeText(this, "You Are Currently Not On Campus",Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "You Are Currently Not On Campus",Toast.LENGTH_LONG).show();
+			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
 		}
 	}
+
 
 	// Search Button
 	public void onClickSearch(View view) {

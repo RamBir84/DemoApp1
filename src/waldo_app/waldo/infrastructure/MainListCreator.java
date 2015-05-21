@@ -26,7 +26,6 @@ public class MainListCreator implements ServerAsyncParent {
 	public MainListCreator(String uidList, NewHomeScreen parent) {
 		this.parent = parent;
 		getDataFromServer(uidList);
-		System.out.println("mlc1");
 	}
 
 	public void getDataFromServer(String uidList) {

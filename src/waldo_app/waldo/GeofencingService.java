@@ -67,6 +67,10 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 
 	}
 
+	public void printStatus(){
+		System.out.println(geoStatus);
+	}
+	
 	/** The service is starting, due to a call to startService() */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -96,9 +100,17 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
    @Override
    public void onDestroy() {
 	   super.onDestroy();
-	   //Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
+	   sendCheckInToServer(settings.getString("uid", "No uid"), false);
+	 Toast.makeText(this, "Service destroyd", Toast.LENGTH_SHORT).show();
+	   
    }
-
+   
+   @Override
+public void onTaskRemoved(Intent rootIntent) {
+	   sendCheckInToServer(settings.getString("uid", "No uid"), false);
+	   Toast.makeText(this, "onTaskRemoved", Toast.LENGTH_SHORT).show();
+	super.onTaskRemoved(rootIntent);
+}
 
 	@Override
 	public void onConnected(Bundle arg0) {
@@ -147,24 +159,24 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		if (distance < geoRadius){
 			geoStatus = 1;
 			sendCheckInToServer(settings.getString("uid", "No uid"), onCampus);
-			Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
 		} else {
 			geoStatus = 2;
 			sendCheckInToServer(settings.getString("uid", "No uid"), !onCampus);
-			Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
 		}	
 	}
 
 	@Override
 	public void onConnectionSuspended(int arg0) {
-		// this callback will be invoked when the client is disconnected
-		// it might happen e.g. when Google Play service crashes
-		// when this happens, all requests are canceled,
-		// and you must wait for it to be connected again
+		   sendCheckInToServer(settings.getString("uid", "No uid"), false);
+			 Toast.makeText(this, "Service suspended", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {	
+		   sendCheckInToServer(settings.getString("uid", "No uid"), false);
+			 Toast.makeText(this, "Service failed", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
