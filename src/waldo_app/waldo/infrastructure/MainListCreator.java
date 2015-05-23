@@ -48,7 +48,6 @@ public class MainListCreator implements ServerAsyncParent {
 
 	public void setDataFromServer(JSONArray users) {
 		try {
-			System.out.println("mlc2");
 			/*
 			SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault());
 			String date = df.format(Calendar.getInstance().getTime());

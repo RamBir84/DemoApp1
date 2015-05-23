@@ -66,6 +66,7 @@
             android:weightSum="100" >
 
             <com.facebook.login.widget.LoginButton
+                android:id="@+id/loginBtn"
                 android:layout_width="0px"
                 android:layout_height="match_parent"
                 android:layout_weight="70"

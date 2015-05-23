@@ -2,6 +2,7 @@
 package waldo_app.waldo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -34,6 +35,7 @@ import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.facebook.share.ShareApi;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
@@ -66,6 +68,7 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
     private ShareDialog shareDialog;
+    private FacebookLogInActivity thisRef;
     private FacebookCallback<Sharer.Result> shareCallback = new FacebookCallback<Sharer.Result>() {
         @Override
         public void onCancel() {
@@ -119,12 +122,15 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
 		if (settings.contains("uid")) {
 			goToHomeActivityAndFinish(settings.getString("uid", "No uid"));
 		}
-		
-
+		setContentView(R.layout.activity_facebook_login);
+		thisRef = this;
+		LoginButton loginButton = (LoginButton) findViewById(R.id.loginBtn);
+	    loginButton.setReadPermissions("user_friends");
 
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
+                    	
                       handlePendingAction();
                       updateUI();
                       //sendLogInData();
@@ -165,7 +171,7 @@ public class FacebookLogInActivity extends FragmentActivity implements ServerAsy
             pendingAction = PendingAction.valueOf(name);
         }
 
-        setContentView(R.layout.activity_facebook_login);
+        
 
         profileTracker = new ProfileTracker() {
             @Override

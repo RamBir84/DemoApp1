@@ -79,7 +79,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	private PopupWindow pwindo;
 	public int position, textLength;
 	FrameLayout blur_layout;
-	ArrayList<ListItem> userData, updatedUserData;
+	ArrayList<ListItem> userData, updatedUserData, friendsList;
 	LinearLayout searchBoxLayout;
 	EditText searchBox;
 	ListAdapter baseListAdapter;
@@ -119,20 +119,17 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		/*---------------------------------------------------------- Start geofencing service --------------------------------------------------------------*/
-		// Start geofencing
+		// Start geofencing service
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
 		}
-
+		
+		System.out.println("geo status:" + GeofencingService.geoStatus);
 		// User profile - set border color
-		if (GeofencingService.onCampus) {
+		if (GeofencingService.geoStatus == 1 || GeofencingService.geoStatus == 4) {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
-			System.out.println("hey1");
 		} else {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
-			System.out.println("hey2");
 		}
 
 		if (getIntent().getExtras() != null) {
@@ -147,9 +144,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		context = getApplicationContext();
 		settings = getSharedPreferences("UserInfo", 0);
 		UserId = settings.getString("uid", "No uid");
-
 		new MainListCreator(UserId, this);
-
+		
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
@@ -177,7 +173,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		/*---------------------------------------------------------- Geofencing status --------------------------------------------------------------*/
 
 		// Set profile picture
-		
+
 		String fb_url = "https://graph.facebook.com/" + UserId + "/picture?type=large";
 		CircleImageView userProfile = (CircleImageView) findViewById(R.id.user_profile);
 		Picasso.with(context).load(fb_url).into(userProfile);
@@ -213,14 +209,9 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 							}
 						}
 					}
-					adapter.notifyDataSetChanged();
 				}
 			}
 		});
-		
-		
-		facebookList();
-		
 	}
 
 
@@ -237,6 +228,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		ed.commit();
 	}
 
+
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -248,7 +240,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		ed.commit();
 
 	}
-
 
 
 	@Override
@@ -264,89 +255,40 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 
+	public void GetFacebookFriends(){
 
-
-
-	//	}
-
-
-
-	public void facebookList(){
-		/*
-		String applicationId = "421560734690363";
-		String userId = UserId;
-		Collection<String> permissions = null;
-		Collection<String> declinedPermissions = null;
-		AccessTokenSource accessTokenSource = AccessTokenSource.FACEBOOK_APPLICATION_SERVICE;
-		Date expirationTime = null; 
-		Date lastRefreshTime = null;
-			AccessToken access = new AccessToken(accessToken, applicationId, userId, permissions, declinedPermissions, accessTokenSource, expirationTime, lastRefreshTime);
-*/
-		
-		GraphRequest request1 = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
-            @Override
-            public void onCompleted(JSONArray jsonArray, GraphResponse graphResponse) {
-            	System.out.println("getFriendsData onCompleted : jsonArray " + jsonArray);
-            	System.out.println("getFriendsData onCompleted : response " + graphResponse);
-            }
-        });
-        request1.executeAsync();
-		
-		/*
-		AccessToken accessToken = AccessToken.getCurrentAccessToken();
-		
-
-		GraphRequestBatch batch = new GraphRequestBatch(
-				GraphRequest.newMyFriendsRequest(
-						accessToken,
-						new GraphRequest.GraphJSONArrayCallback() {
-							@Override
-							public void onCompleted(
-									JSONArray jsonArray,
-									GraphResponse response) {
-								// Application code for users friends
-								System.out.println("getFriendsData onCompleted : jsonArray " + jsonArray);
-								System.out.println("getFriendsData onCompleted : response " + response);
-								try {
-									JSONObject jsonObject = response.getJSONObject();
-									System.out.println("getFriendsData onCompleted : jsonObject " + jsonObject);
-									JSONObject summary = jsonObject.getJSONObject("summary");
-									System.out.println("getFriendsData onCompleted : summary total_count - " + summary.getString("total_count"));
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						})
-
-				);
-		batch.addCallback(new GraphRequestBatch.Callback() {
+		GraphRequest request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
 			@Override
-			public void onBatchCompleted(GraphRequestBatch graphRequests) {
-				// Application code for when the batch finishes
+			public void onCompleted(JSONArray friends, GraphResponse graphResponse) {
+			//	System.out.println("getFriendsData onCompleted : jsonArray " + friends);
+			//	System.out.println("getFriendsData onCompleted : response " + graphResponse);
+				try {
+
+					friendsList = new ArrayList<ListItem>();
+					for (int i = 0; i < friends.length(); i++) {
+						String id = (String)friends.getJSONObject(i).getString("id");
+						for (int j = 0; j < userData.size(); j++) {
+							if (userData.get(j).uId.compareTo(id) == 0){
+								friendsList.add(userData.get(j));
+								System.out.println("SUCCESS555");
+							}
+						}
+					}
+					userData = friendsList;
+					updatedUserData = new ArrayList<ListItem>(userData);
+					mainContainer = (ListView) findViewById(R.id.mainContainer);
+					baseListAdapter = new MainListAdapter(NewHomeScreen.this, userData);
+					adapter = new MainListAdapter(NewHomeScreen.this, updatedUserData);
+					mainContainer.setAdapter(adapter);
+					myAdapter = adapter;
+					usersDataLoaded = !usersDataLoaded;
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}   	
 			}
 		});
-		batch.executeAsync();
-
-		Bundle parameters = new Bundle();
-		parameters.putString("fields", "id,name,link,picture");
-
-		/*
-		GraphRequest request = GraphRequest.newMeRequest(
-		        accessToken,
-		        new GraphRequest.GraphJSONObjectCallback() {
-		            @Override
-		            public void onCompleted(
-		                   JSONObject object,
-		                   GraphResponse response) {
-		                // Application code
-		            }
-		        });
-		Bundle parameters = new Bundle();
-		parameters.putString("fields", "id,name,link");
-		request.setParameters(parameters);
 		request.executeAsync();
-		 */
-
 	}
 
 
@@ -376,18 +318,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 				listOfUsers = tmpListOfUsers;
 			}
 		}
-
 		userData = listOfUsers;
-		updatedUserData = new ArrayList<ListItem>(userData);
-
-		mainContainer = (ListView) findViewById(R.id.mainContainer);
-
-		baseListAdapter = new MainListAdapter(this, userData);
-		adapter = new MainListAdapter(this, updatedUserData);
-		mainContainer.setAdapter(adapter);
-		myAdapter = adapter;
-
-		usersDataLoaded = !usersDataLoaded;
+		GetFacebookFriends();
 	}
 
 	@Override
@@ -410,7 +342,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	public void onClickUserProfile(View view) {
-		if (GeofencingService.onCampus){
+		if (GeofencingService.geoStatus == 1 | GeofencingService.geoStatus == 4){
 			Toast.makeText(this, "You Are Currently On Campus",Toast.LENGTH_LONG).show();
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
 		} else {
