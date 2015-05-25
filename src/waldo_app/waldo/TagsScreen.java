@@ -7,12 +7,17 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationServices;
+
 import waldo_app.waldo.helpers.ServerAsyncParent;
 import waldo_app.waldo.helpers.ServerCommunicator;
+import waldo_app.waldo.helpers.Utils;
 import waldo_app.waldo.infrastructure.ListTagItem;
 import waldo_app.waldo.infrastructure.TagListAdapter;
 import waldo_app.waldo.infrastructure.TagListCreator;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -26,6 +31,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
@@ -41,10 +47,13 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-public class TagsScreen extends Activity implements ServerAsyncParent {
+public class TagsScreen extends Activity implements ServerAsyncParent,
+		GoogleApiClient.ConnectionCallbacks,
+		GoogleApiClient.OnConnectionFailedListener,
+		com.google.android.gms.location.LocationListener {
 	private ListView mainTagContainer;
 	public static boolean isOnline = false;
-	ImageButton btnClosePopup, btnSendTag;	
+	ImageButton btnClosePopup, btnSendTag;
 	private PopupWindow pwindo;
 	FrameLayout blur_layout;
 	static Location userLocation;
@@ -53,18 +62,25 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 	EditText tagEdit;
 	int position;
 	String targetID;
-	//boolean tagListReady = false;
+	// boolean tagListReady = false;
 	private String message;
 	SharedPreferences settings = null;
-
+	private GoogleApiClient mGoogleClient;
+	private TagsScreen thisRef;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.activity_tags_screen);
+		thisRef = this;
 		blur_layout = (FrameLayout) findViewById(R.id.tagScreenFrame);
 		blur_layout.getForeground().setAlpha(0);
-		
+
+		mGoogleClient = new GoogleApiClient.Builder(this, this, this).addApi(
+				LocationServices.API).build();
+
+		mGoogleClient.connect();
+
 		// Start geofencing service
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
@@ -106,8 +122,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		super.onNewIntent(intent);
 		targetID = intent.getExtras().getString("gcm_id");
 	}
-	
-	
+
 	private void chooseTagsAndDisplay() {
 
 		float radius = userLocation.getAccuracy();
@@ -126,22 +141,23 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 	
 		for (int i = 0; i < fakeTags.size(); i++) {
 			System.out.println("tag: " + fakeTags.get(i).tag);
-			System.out.println("tag location: " + fakeTags.get(i).tag_location.getLatitude() + ", " + fakeTags.get(i).tag_location.getLongitude());
+			System.out.println("tag location: "
+					+ fakeTags.get(i).tag_location.getLatitude() + ", "
+					+ fakeTags.get(i).tag_location.getLongitude());
 		}
 	}
-	
-	
+
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
 		finish();
 	}
-	
+
 	// Menu Button
 	public void onClickTagMenu(final View view) {
 		triggerNotification();
-		//Toast.makeText(this, "Open menu(Tag)", Toast.LENGTH_SHORT).show();	
+		// Toast.makeText(this, "Open menu(Tag)", Toast.LENGTH_SHORT).show();
 	}
 
 	// Search Button
@@ -151,7 +167,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 
 	/*----------------------------------------------------- Tag Item -----------------------------------------------------------*/
 	public void onClickItem(final View view) {
-			
+
 		targetID = getIntent().getExtras().getString("gcm_id");
 		settings = getSharedPreferences("UserInfo", 0);
 		position = (Integer) view.getTag();
@@ -162,19 +178,19 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		
 		StringBuilder gcm_message = new StringBuilder();
 		gcm_message.append(2).append(",")
-					.append(settings.getString("uid", "Your friend")).append(",")
-					.append(settings.getString("userName", "Your friend")).append(",")
-					.append(TagListAdapter.items.get(position).tag).append(".");
+				.append(settings.getString("uid", "Your friend")).append(",")
+				.append(settings.getString("userName", "Your friend"))
+				.append(",").append(TagListAdapter.items.get(position).tag)
+				.append(".");
 		message = gcm_message.toString();
-		
-		
+
 		/* here we put the reciever id" */
 		params.add(new BasicNameValuePair("target", targetID));
 		/* here we put the message we want to sent" */
 		params.add(new BasicNameValuePair("message", message));
 
 		new ServerCommunicator(new ServerAsyncParent() {
-			
+
 			@Override
 			public void doOnPostExecute(JSONObject jObj) {
 				// TODO Auto-generated method stub
@@ -200,7 +216,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		// **Have to Add - change the data to: data.icon_status = "online"
 		startActivity(new Intent(this, NewHomeScreen.class));
 		finish();
-		//Toast.makeText(this, "Tag was sent", Toast.LENGTH_SHORT).show();	
+		// Toast.makeText(this, "Tag was sent", Toast.LENGTH_SHORT).show();
 	}
 
 	// Add tag popup
@@ -223,28 +239,28 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		pwindo.setFocusable(true);
 		pwindo.update();
 	}
-	
+
 	private OnClickListener cancel_add_tag_click_listener = new OnClickListener() {
 		public void onClick(View v) {
 			// restore blur and enable layout
-			blur_layout.getForeground().setAlpha(0); 
+			blur_layout.getForeground().setAlpha(0);
 			pwindo.showAsDropDown((View) v.getParent());
 			pwindo.dismiss();
 		}
-	};	
-	
+	};
+
 	private OnClickListener send_tag_listener = new OnClickListener() {
 		public void onClick(View v) {
 			// close popup and reset blur
-			blur_layout.getForeground().setAlpha(0); 
-			pwindo.dismiss(); 
-			
+			blur_layout.getForeground().setAlpha(0);
+			pwindo.dismiss();
+
 			// Take tag name
 			String tag = (tagEdit.getText().toString());
-			
+
 			// Get current location for the tag
 			userLocation = GeofencingService.userLocation;
-			
+
 			// Send the tag
 			sendTag(tag, userLocation);
 			Toast.makeText(TagsScreen.this, "The new tag: " + tag + " was swent.", Toast.LENGTH_SHORT).show();
@@ -265,25 +281,25 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		}
 		return false;
 	}
-	
+
 	public void sendTag(String tag, Location tagLocation) {
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-		
-/*---------------------------------------Send Tag to friend------------------------------------------------------*/
+
+		/*---------------------------------------Send Tag to friend------------------------------------------------------*/
 		StringBuilder gcm_message = new StringBuilder();
 		gcm_message.append(2).append(",")
-					.append(settings.getString("uid", "Your friend")).append(",")
-					.append(settings.getString("userName", "Your friend")).append(",")
-					.append(tag).append(".");
+				.append(settings.getString("uid", "Your friend")).append(",")
+				.append(settings.getString("userName", "Your friend"))
+				.append(",").append(tag).append(".");
 		message = gcm_message.toString();
-		
+
 		/* here we put the reciever id" */
 		params.add(new BasicNameValuePair("target", targetID));
 		/* here we put the message we want to sent" */
 		params.add(new BasicNameValuePair("message", message));
 
 		new ServerCommunicator(new ServerAsyncParent() {
-			
+
 			@Override
 			public void doOnPostExecute(JSONObject jObj) {
 				// TODO Auto-generated method stub
@@ -303,11 +319,10 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 			}
 		}, params, ServerCommunicator.METHOD_POST)
 				.execute("http://ram.milab.idc.ac.il/GCM_send_message.php");
-		
 
-/*---------------------------------------Send Tag to server------------------------------------------------------*/		
+		/*---------------------------------------Send Tag to server------------------------------------------------------*/
 		params = new ArrayList<NameValuePair>();
-		
+
 		params.add(new BasicNameValuePair("name", tag));
 		params.add(new BasicNameValuePair("latitude", Double.toString(tagLocation.getLatitude())));
 		params.add(new BasicNameValuePair("longitude", Double.toString(tagLocation.getLongitude())));
@@ -322,7 +337,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 	@Override
 	public void doOnPostExecute(JSONObject jObj) {
 		// TODO Auto-generated method stub
-		
+
 		try {
 			if (jObj.getInt("success") == 1){
 				//Toast.makeText(this, jObj.getString("message"), Toast.LENGTH_LONG).show();
@@ -356,7 +371,6 @@ public class TagsScreen extends Activity implements ServerAsyncParent {
 		mNotificationManager.notify(123, mBuilder.build());
 	}
 
-	
 public void onDataLoadeFromServer(ArrayList<ListTagItem> listOfTags) {
 	
 	fakeTags = listOfTags;
@@ -375,5 +389,61 @@ public void onDataLoadeFromServer(ArrayList<ListTagItem> listOfTags) {
 		
 		usersDataLoaded = !usersDataLoaded;*/
 	}
-}
 
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		// TODO Auto-generated method stub
+
+		checkLocationServices(this);
+
+	}
+
+	public void checkLocationServices(Activity runningActivity) {
+
+		LocationAvailability locAval = LocationServices.FusedLocationApi
+				.getLocationAvailability(mGoogleClient);
+		boolean isLocAval = locAval.isLocationAvailable();
+
+		if (!isLocAval) {
+
+			Utils.displayPromptForEnablingGPS(runningActivity);
+		} else {
+			userLocation = LocationServices.FusedLocationApi
+					.getLastLocation(mGoogleClient);
+			new TagListCreator(userLocation, this);
+		}
+	}
+
+	@Override
+	public void onConnectionSuspended(int cause) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == 100) {
+			
+			final Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+			    @Override
+			    public void run() {
+			        // Do something after 5s = 5000ms
+			    	checkLocationServices(thisRef);
+			    }
+			}, 3000);
+		}
+	}
+}

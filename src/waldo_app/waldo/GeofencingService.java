@@ -103,7 +103,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
    public void onDestroy() {
 	   super.onDestroy();
 	   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-	// Toast.makeText(this, "Service destroyd", Toast.LENGTH_SHORT).show();
+	// Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
 	   
    }
    
@@ -118,53 +118,54 @@ public void onTaskRemoved(Intent rootIntent) {
 		// Toast.makeText(this, "Service Connected", Toast.LENGTH_SHORT).show();
 		
 /**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
-
-		checkLocationServices(null);
+		//checkLocationServices(null);
 		
-		// update user location
-		userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
+		/* update user location */
+		//userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
 		
-		// update the distance between userLocation and geoLocation
-		distance = userLocation.distanceTo(geoLocation);
-		/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
+		/* update the distance between userLocation and geoLocation */
+		//distance = userLocation.distanceTo(geoLocation);
+/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
 
 		/* start listening to location updates this is suitable for foreground listening, with the onLocationChanged() invoked for location updates */
-		LocationRequest locationRequest = LocationRequest.create()
-				.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)/*priority - couple of options (have to choose the best one)*/
-				.setFastestInterval(5000L) // read
-				.setInterval(10000L) // read
-				.setSmallestDisplacement(75.0F); // read
+		
+//		LocationRequest locationRequest = LocationRequest.create()
+//				.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)/*priority - couple of options (have to choose the best one)*/
+//				.setFastestInterval(5000L) // read
+//				.setInterval(10000L) // read
+//				.setSmallestDisplacement(75.0F); // read
 
 		/* activate the requestloactionpdates that activate the method onloactionchanged of the locationlistner that we passed to it */
-		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleClient, locationRequest, this);
+//		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleClient, locationRequest, this);
 
-		// the actual geofence action
+		/*-------------------- The actual geofence action -----------------*/
 		ArrayList<Geofence> geofences = new ArrayList<Geofence>();
+		
 		geofences.add(new Geofence.Builder()
-		.setExpirationDuration(Geofence.NEVER_EXPIRE)
-		.setRequestId("unique-geofence-id")
-		.setCircularRegion(geoLatitude, geoLongitude, geoRadius)
-		/*coordinate and radius in meters*/ .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
-		.setLoiteringDelay(1800000) // check every 30 minutes (1000 = 1 sec)
-		.build());
+						.setExpirationDuration(Geofence.NEVER_EXPIRE)
+						.setRequestId("unique-geofence-id")
+						.setCircularRegion(geoLatitude, geoLongitude, geoRadius)/*coordinate and radius in meters*/ 
+						.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
+						.setLoiteringDelay(1800000) //1800000 check every 30 minutes (1000 = 1 sec)
+						.build());
 		
 		System.out.println("IM HERE!!!!!");
-
+		
+		/*--------------------- same as above - with the pendingintent ----------------------*/
 		PendingIntent pendingIntent = PendingIntent.getService(this, 0, new Intent(this, MyLocationHandler.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
-		// same as above - with the pendingintent
 		LocationServices.GeofencingApi.addGeofences(mGoogleClient, geofences, pendingIntent);
 
-		// update the geofence status
-		if (distance < geoRadius){
-			geoStatus = 1;
-			sendCheckInToServer(settings.getString("uid", "No uid"), onCampus);
-			//Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
-		} else {
-			geoStatus = 2;
-			sendCheckInToServer(settings.getString("uid", "No uid"), !onCampus);
-			//Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
-		}	
+		/* update the geofence status */
+//		if (distance < geoRadius){
+//			geoStatus = 1;
+//			sendCheckInToServer(settings.getString("uid", "No uid"), onCampus);
+//			Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
+//		} else {
+//			geoStatus = 2;
+//			sendCheckInToServer(settings.getString("uid", "No uid"), !onCampus);
+//			Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
+//		}	
 	}
 
 	@Override
@@ -183,6 +184,7 @@ public void onTaskRemoved(Intent rootIntent) {
 	public void onLocationChanged(Location location) {
 		// the toast for the auto update
 		if (location != null) {
+			//userLocation = location;
 			//Toast.makeText(this,"Auto Location: "+location.getLatitude()+" : "+location.getLongitude(), Toast.LENGTH_SHORT).show();
 		} else {
 			//Toast.makeText(this,"AUTO NULL", Toast.LENGTH_SHORT).show();
