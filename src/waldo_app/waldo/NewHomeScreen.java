@@ -111,7 +111,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	// hold the registration ID of the user
 	String regid;
-	String targetID = "APA91bGhtJwtxwvFSbq0GLk1lbuL_D92jJTjojfFs4wbg_bEdc_Q_gqt0AJEauUG55YdvQpEuxcBop6Yb4iKYb3RjKXtTJSAollo8EwgtZxvkkqXoQTMwOxxX5NVXFM3JXE6L6q08xa6rh9En9AK8S5kRJcQ7fxQ";
+	String targetID; //= "APA91bGhtJwtxwvFSbq0GLk1lbuL_D92jJTjojfFs4wbg_bEdc_Q_gqt0AJEauUG55YdvQpEuxcBop6Yb4iKYb3RjKXtTJSAollo8EwgtZxvkkqXoQTMwOxxX5NVXFM3JXE6L6q08xa6rh9En9AK8S5kRJcQ7fxQ";
 	String message = "This is a test GCM message!!";
 	private String locationSenderId;
 	private String locationSenderTag;
@@ -119,12 +119,14 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		// Start geofencing service
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
 		}
 
 		System.out.println("geo status:" + GeofencingService.geoStatus);
+		
 		// User profile - set border color
 		if (GeofencingService.geoStatus == 1 || GeofencingService.geoStatus == 4) {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
@@ -152,7 +154,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		Width = size.x;
 		Height = size.y;
 
-		/*--------------------------------------------------------------- GCM ----------------------------------------------------------------------------*/
+		/*---------------------------------------------------------- GCM --------------------------------------------*/
 		// mDisplay = (TextView) findViewById(R.id.display);
 
 		// Check device for Play Services APK. If check succeeds, proceed with
@@ -170,7 +172,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		 * // Print MY ID Toast.makeText(this, regid, Toast.LENGTH_LONG).show();
 		 * Log.v("REGID", regid);
 		 */
-		/*---------------------------------------------------------- Geofencing status --------------------------------------------------------------*/
+		/*----------------------------------------------- Geofencing status -----------------------------------------*/
 
 		// Set profile picture
 
@@ -178,7 +180,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		CircleImageView userProfile = (CircleImageView) findViewById(R.id.user_profile);
 		Picasso.with(context).load(fb_url).into(userProfile);
 
-		/*---------------------------------------------------------- Handling search mode --------------------------------------------------------------*/
+		/*----------------------------------------- Handling search mode --------------------------------------------*/
 		textLength = 0;
 		searchBox = (EditText) findViewById(R.id.searchBox);
 		searchBox.addTextChangedListener(new TextWatcher() {
@@ -354,7 +356,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	public void onClickUserProfile(View view) {
-		if (GeofencingService.geoStatus == 1 | GeofencingService.geoStatus == 4){
+		if (GeofencingService.geoStatus == 1 || GeofencingService.geoStatus == 4){
 			Toast.makeText(this, "You Are Currently On Campus",Toast.LENGTH_LONG).show();
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
 		} else {

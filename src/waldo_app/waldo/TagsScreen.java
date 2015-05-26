@@ -51,6 +51,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 		GoogleApiClient.ConnectionCallbacks,
 		GoogleApiClient.OnConnectionFailedListener,
 		com.google.android.gms.location.LocationListener {
+	
 	private ListView mainTagContainer;
 	public static boolean isOnline = false;
 	ImageButton btnClosePopup, btnSendTag;
@@ -85,13 +86,14 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
 		}
-		userLocation = GeofencingService.userLocation;
+		
+		//userLocation = GeofencingService.userLocation;
 		
 		//targetID = savedInstanceState.getString("gcm_id");
 		
 		settings = getSharedPreferences("UserInfo", 0);
 		
-		new TagListCreator(userLocation, this);
+		//new TagListCreator(userLocation, this);
 	}
 	
 	@Override
@@ -184,7 +186,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 				.append(".");
 		message = gcm_message.toString();
 
-		/* here we put the reciever id" */
+		/* here we put the receiver id" */
 		params.add(new BasicNameValuePair("target", targetID));
 		/* here we put the message we want to sent" */
 		params.add(new BasicNameValuePair("message", message));
@@ -219,7 +221,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 		// Toast.makeText(this, "Tag was sent", Toast.LENGTH_SHORT).show();
 	}
 
-	// Add tag popup
+	/*---------------------------------------- Add tag popup ----------------------------------------------------*/
 	private void initiatePopupWindow() {
 
 		// We need to get the instance of the LayoutInflater
@@ -259,7 +261,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 			String tag = (tagEdit.getText().toString());
 
 			// Get current location for the tag
-			userLocation = GeofencingService.userLocation;
+			//userLocation = GeofencingService.userLocation;
 
 			// Send the tag
 			sendTag(tag, userLocation);
@@ -283,6 +285,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 	}
 
 	public void sendTag(String tag, Location tagLocation) {
+		targetID = getIntent().getExtras().getString("gcm_id");
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 
 		/*---------------------------------------Send Tag to friend------------------------------------------------------*/
@@ -293,7 +296,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 				.append(",").append(tag).append(".");
 		message = gcm_message.toString();
 
-		/* here we put the reciever id" */
+		/* here we put the receiver id" */
 		params.add(new BasicNameValuePair("target", targetID));
 		/* here we put the message we want to sent" */
 		params.add(new BasicNameValuePair("message", message));
@@ -311,10 +314,10 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 					e.printStackTrace();
 				}
 
-				if (gcmResponsStatus == 200) {
+				if (gcmResponsStatus == 1) {
 					/*--Do here the change in the friend list item--*/
 				} else {
-					Log.v("GCM", "Send new Tag to friend failed" + jObj.toString());
+					Log.v("GCM_New_Tag", "Send new Tag to friend failed" + jObj.toString());
 				}
 			}
 		}, params, ServerCommunicator.METHOD_POST)
@@ -341,8 +344,10 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 		try {
 			if (jObj.getInt("success") == 1){
 				//Toast.makeText(this, jObj.getString("message"), Toast.LENGTH_LONG).show();
+				Log.v("New_Tag", "Send new Tag to server success" + jObj.toString());
 			}else {
 				//Toast.makeText(this, jObj.getString("message"), Toast.LENGTH_LONG).show();
+				Log.v("New_Tag", "Send new Tag to server failed" + jObj.toString());
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -412,16 +417,14 @@ public void onDataLoadeFromServer(ArrayList<ListTagItem> listOfTags) {
 
 	public void checkLocationServices(Activity runningActivity) {
 
-		LocationAvailability locAval = LocationServices.FusedLocationApi
-				.getLocationAvailability(mGoogleClient);
+		LocationAvailability locAval = LocationServices.FusedLocationApi.getLocationAvailability(mGoogleClient);
 		boolean isLocAval = locAval.isLocationAvailable();
 
 		if (!isLocAval) {
 
 			Utils.displayPromptForEnablingGPS(runningActivity);
 		} else {
-			userLocation = LocationServices.FusedLocationApi
-					.getLastLocation(mGoogleClient);
+			userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
 			new TagListCreator(userLocation, this);
 		}
 	}

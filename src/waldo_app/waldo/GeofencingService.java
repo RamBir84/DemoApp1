@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
@@ -87,8 +88,8 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	/** Called when all clients have unbound with unbindService() */
 	@Override
 	public boolean onUnbind(Intent intent) {
-		   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-			Toast.makeText(this, "Service onUnbind", Toast.LENGTH_SHORT).show();
+		sendCheckInToServer(settings.getString("uid", "No uid"), false);
+		//Toast.makeText(this, "Service onUnbind", Toast.LENGTH_SHORT).show();
 		return mAllowRebind;
 	}
 
@@ -114,17 +115,16 @@ public void onTaskRemoved(Intent rootIntent) {
 
 	@Override
 	public void onConnected(Bundle arg0) {
-		// Toast
 		// Toast.makeText(this, "Service Connected", Toast.LENGTH_SHORT).show();
 		
 /**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
-		//checkLocationServices(null);
+		if (!checkLocationServices()) return;
 		
 		/* update user location */
-		//userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
+		userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
 		
 		/* update the distance between userLocation and geoLocation */
-		//distance = userLocation.distanceTo(geoLocation);
+		distance = userLocation.distanceTo(geoLocation);
 /**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
 
 		/* start listening to location updates this is suitable for foreground listening, with the onLocationChanged() invoked for location updates */
@@ -157,15 +157,17 @@ public void onTaskRemoved(Intent rootIntent) {
 		LocationServices.GeofencingApi.addGeofences(mGoogleClient, geofences, pendingIntent);
 
 		/* update the geofence status */
-//		if (distance < geoRadius){
-//			geoStatus = 1;
-//			sendCheckInToServer(settings.getString("uid", "No uid"), onCampus);
-//			Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
-//		} else {
-//			geoStatus = 2;
-//			sendCheckInToServer(settings.getString("uid", "No uid"), !onCampus);
-//			Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
-//		}	
+		if (distance < geoRadius){
+			geoStatus = 1;
+			sendCheckInToServer(settings.getString("uid", "No uid"), onCampus);
+			//Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
+			Log.v("Geo_servis", "AUTO : You are inside the IDC");
+		} else {
+			geoStatus = 2;
+			sendCheckInToServer(settings.getString("uid", "No uid"), !onCampus);
+			//Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
+			Log.v("Geo_servis", "AUTO : You are outside the IDC");
+		}	
 	}
 
 	@Override
@@ -217,13 +219,9 @@ public void onTaskRemoved(Intent rootIntent) {
 		}
 	}
 	
-	public void checkLocationServices(Activity runningActivity) {
-		
-		if (!LocationServices.FusedLocationApi.getLocationAvailability(mGoogleClient).isLocationAvailable()) {
-			if (runningActivity != null && getApplication().getSharedPreferences("OURINFO", MODE_PRIVATE).getBoolean("active", false)) {
-				Utils.displayPromptForEnablingGPS(runningActivity);
-			}
-			
-		}
+	public boolean checkLocationServices() {
+		LocationAvailability locAval = LocationServices.FusedLocationApi
+				.getLocationAvailability(mGoogleClient);
+		return locAval.isLocationAvailable();
 	}
 }
