@@ -116,21 +116,17 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	private String locationSenderId;
 	private String locationSenderTag;
 
-	private int geoStatus;
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		/*---------------------------------------------------------- Start geofencing service --------------------------------------------------------------*/
-		// Start geofencing
+		// Start geofencing service
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
 		}
-		
+
 		System.out.println("geo status:" + GeofencingService.geoStatus);
 		// User profile - set border color
-		geoStatus = GeofencingService.geoStatus;
-		if (geoStatus == 1 || geoStatus == 4) {
+		if (GeofencingService.geoStatus == 1 || GeofencingService.geoStatus == 4) {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
 		} else {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
@@ -148,7 +144,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		context = getApplicationContext();
 		settings = getSharedPreferences("UserInfo", 0);
 		UserId = settings.getString("uid", "No uid");
-
 		new MainListCreator(UserId, this);
 
 		Display display = getWindowManager().getDefaultDisplay();
@@ -178,6 +173,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		/*---------------------------------------------------------- Geofencing status --------------------------------------------------------------*/
 
 		// Set profile picture
+
 		String fb_url = "https://graph.facebook.com/" + UserId + "/picture?type=large";
 		CircleImageView userProfile = (CircleImageView) findViewById(R.id.user_profile);
 		Picasso.with(context).load(fb_url).into(userProfile);
@@ -213,11 +209,13 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 							}
 						}
 					}
-					adapter.notifyDataSetChanged();
 				}
 			}
 		});
 	}
+
+
+
 
 	@Override
 	protected void onStart() {
@@ -230,6 +228,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		ed.commit();
 	}
 
+
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -241,6 +240,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		ed.commit();
 
 	}
+
 
 	@Override
 	protected void onNewIntent(Intent intent) {
@@ -257,24 +257,35 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	public void GetFacebookFriends(){
 
-		GraphRequest request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(),
-																new GraphRequest.GraphJSONArrayCallback() {
+		GraphRequest request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
 			@Override
 			public void onCompleted(JSONArray friends, GraphResponse graphResponse) {
-			//	System.out.println("getFriendsData onCompleted : jsonArray " + friends);
-			//	System.out.println("getFriendsData onCompleted : response " + graphResponse);
+				//	System.out.println("getFriendsData onCompleted : jsonArray " + friends);
+				//	System.out.println("getFriendsData onCompleted : response " + graphResponse);
 				try {
-
+/*
 					friendsList = new ArrayList<ListItem>();
 					for (int i = 0; i < friends.length(); i++) {
 						String id = (String)friends.getJSONObject(i).getString("id");
 						for (int j = 0; j < userData.size(); j++) {
 							if (userData.get(j).uId.compareTo(id) == 0){
 								friendsList.add(userData.get(j));
-								System.out.println("SUCCESS555");
 							}
 						}
 					}
+*/
+					friendsList = new ArrayList<ListItem>();
+					for (int i = 0; i < userData.size(); i++) {
+						for (int j = 0; j < friends.length(); j++) {
+							String id = (String)friends.getJSONObject(j).getString("id");
+							if (userData.get(i).uId.compareTo(id) == 0){
+								friendsList.add(userData.get(i));
+							}
+						}
+					}
+
+
+
 					userData = friendsList;
 					updatedUserData = new ArrayList<ListItem>(userData);
 					mainContainer = (ListView) findViewById(R.id.mainContainer);
@@ -283,7 +294,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 					mainContainer.setAdapter(adapter);
 					myAdapter = adapter;
 					usersDataLoaded = !usersDataLoaded;
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}   	
@@ -292,14 +303,9 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		request.executeAsync();
 	}
 
+
+
 	public void onDataLoadeFromServer(ArrayList<ListItem> listOfUsers) {
-		
-		// TODO Auto-generated method stub
-		/**----------------------    TEST    ------------------------**/
-		listOfUsers.get(1).icon_status = IconStatus.request_received;
-		/**----------------------    TEST    ------------------------**/
-		// TODO Auto-generated method stub
-		
 		int locationSenderIndex = 0;
 
 		if (locationSenderId != null && locationSenderTag != null) {
@@ -324,7 +330,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 				listOfUsers = tmpListOfUsers;
 			}
 		}
-
 		userData = listOfUsers;
 		GetFacebookFriends();
 	}
@@ -349,7 +354,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	public void onClickUserProfile(View view) {
-		if (GeofencingService.geoStatus == 1 || GeofencingService.geoStatus == 4){
+		if (GeofencingService.geoStatus == 1 | GeofencingService.geoStatus == 4){
 			Toast.makeText(this, "You Are Currently On Campus",Toast.LENGTH_LONG).show();
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
 		} else {
@@ -357,6 +362,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
 		}
 	}
+
 
 	// Search Button
 	public void onClickSearch(View view) {
