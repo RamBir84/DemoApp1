@@ -16,7 +16,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-//import android.content.SharedPreferences;
 import android.widget.Toast;
 
 
@@ -33,6 +32,7 @@ public class MyLocationHandler extends IntentService implements ServerAsyncParen
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		SharedPreferences.Editor editor = settings.edit();
 
 		GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 		GeofencingService.geoStatus = geofencingEvent.getGeofenceTransition();		
@@ -42,19 +42,17 @@ public class MyLocationHandler extends IntentService implements ServerAsyncParen
 			this.sendCheckInToServer(settings.getString("uid", "no uid"), onCampus);
 			//Toast.makeText(this, "AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
 			Log.v("Geo_handler", "AUTO : You are inside the IDC");
-			
+			editor.putInt("on_campus", 1);
 		} else if (GeofencingService.geoStatus == 2) {
-			
+			editor.putInt("on_campus", 2);
 			this.sendCheckInToServer(settings.getString("uid", "no uid"), !onCampus);
-			
-			
-			//Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
 			Log.v("Geo_handler", "AUTO : You are outside the IDC");
 			
 		} else {
 			Toast.makeText(this, "AUTO : geoStatus NULL", Toast.LENGTH_SHORT).show();
 			Log.v("Geo_handler", "AUTO : geoStatus NULL");
 		}
+		editor.commit();
 	}
 	
 	public void sendCheckInToServer(String userId, boolean onCampus ) {

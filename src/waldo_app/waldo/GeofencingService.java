@@ -11,13 +11,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationAvailability;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import waldo_app.waldo.helpers.ServerAsyncParent;
 import waldo_app.waldo.helpers.ServerCommunicator;
-import waldo_app.waldo.helpers.Utils;
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.location.Location;
@@ -26,7 +23,6 @@ import android.os.IBinder;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-import android.widget.Toast;
 
 public class GeofencingService extends Service implements GoogleApiClient.ConnectionCallbacks,
 GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, ServerAsyncParent {
@@ -54,9 +50,8 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	/** Called when the service is being created. */
 	@Override
 	public void onCreate() {
-		// Toast.makeText(this, "Service created", Toast.LENGTH_SHORT).show();
 		mGoogleClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();		
-		geoStatus = -1;
+		//geoStatus = -1;
 		geoLatitude = 32.177256142836924;/*idc*////32.16469634171559;*apartment*32.16744820334117;
 		geoLongitude = 34.83560096472502;/*idc*////34.84679650515318;*apartment*34.83503853902221;
 		geoRadius = 500;
@@ -65,7 +60,6 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		geoLocation.setLongitude(geoLongitude);
 		settings = getSharedPreferences("UserInfo", 0);
 		onCampus = true;
-
 	}
 
 	public void printStatus(){
@@ -89,7 +83,6 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	@Override
 	public boolean onUnbind(Intent intent) {
 		sendCheckInToServer(settings.getString("uid", "No uid"), false);
-		//Toast.makeText(this, "Service onUnbind", Toast.LENGTH_SHORT).show();
 		return mAllowRebind;
 	}
 
@@ -104,7 +97,9 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
    public void onDestroy() {
 	   super.onDestroy();
 	   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-	// Toast.makeText(this, "Service Destroyed", Toast.LENGTH_SHORT).show();
+	   SharedPreferences.Editor editor = settings.edit();
+	   editor.putInt("on_campus", 2);
+	   editor.commit();
 	   
    }
    
@@ -115,10 +110,11 @@ public void onTaskRemoved(Intent rootIntent) {
 
 	@Override
 	public void onConnected(Bundle arg0) {
-		// Toast.makeText(this, "Service Connected", Toast.LENGTH_SHORT).show();
-		
+    	SharedPreferences.Editor editor = settings.edit();
+
 /**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
 		if (!checkLocationServices()) return;
+	//	checkLocationServices(null);
 		
 		/* update user location */
 		userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
@@ -149,8 +145,6 @@ public void onTaskRemoved(Intent rootIntent) {
 						.setLoiteringDelay(1800000) //1800000 check every 30 minutes (1000 = 1 sec)
 						.build());
 		
-		System.out.println("IM HERE!!!!!");
-		
 		/*--------------------- same as above - with the pendingintent ----------------------*/
 		PendingIntent pendingIntent = PendingIntent.getService(this, 0, new Intent(this, MyLocationHandler.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -158,22 +152,29 @@ public void onTaskRemoved(Intent rootIntent) {
 
 		/* update the geofence status */
 		if (distance < geoRadius){
+			System.out.println("on campus status 1");
 			geoStatus = 1;
 			sendCheckInToServer(settings.getString("uid", "No uid"), onCampus);
 			//Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
 			Log.v("Geo_servis", "AUTO : You are inside the IDC");
+			editor.putInt("on_campus", 1);
 		} else {
+			System.out.println("on campus status 2");
 			geoStatus = 2;
 			sendCheckInToServer(settings.getString("uid", "No uid"), !onCampus);
 			//Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
 			Log.v("Geo_servis", "AUTO : You are outside the IDC");
+			editor.putInt("on_campus", 2);
 		}	
+		editor.commit();
 	}
 
 	@Override
 	public void onConnectionSuspended(int arg0) {
 		   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-	//		 Toast.makeText(this, "Service suspended", Toast.LENGTH_SHORT).show();
+		   SharedPreferences.Editor editor = settings.edit();
+		   editor.putInt("on_campus", 2);
+		   editor.commit();
 	}
 
 	@Override

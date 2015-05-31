@@ -1,7 +1,6 @@
 package waldo_app.waldo;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,11 +57,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenSource;
 import com.facebook.GraphRequest;
-import com.facebook.GraphRequestBatch;
 import com.facebook.GraphResponse;
-import com.facebook.internal.CollectionMapper.Collection;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -92,7 +88,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	public SharedPreferences settings = null;
 	public static int Width, Height;
 
-	// some changess - and another changes
 	// GCM fields
 	public static final String EXTRA_MESSAGE = "message";
 	public static final String PROPERTY_REG_ID = "registration_id";
@@ -115,6 +110,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	String message = "This is a test GCM message!!";
 	private String locationSenderId;
 	private String locationSenderTag;
+	
+	int onCampus = 5;
 
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -125,38 +122,35 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
 		}
 
-		System.out.println("geo status:" + GeofencingService.geoStatus);
-		
-		// User profile - set border color
-		if (GeofencingService.geoStatus == 1 || GeofencingService.geoStatus == 4) {
-			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
-		} else {
-			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
-		}
-
 		if (getIntent().getExtras() != null) {
 			locationSenderId = getIntent().getExtras().getString("user_id");
 			locationSenderTag = getIntent().getExtras().getString("tag");
 		}
-		// Set the activity, search box and blur for popup mode
+		// Set the activity, search box, blur, and border color
+		settings = getSharedPreferences("UserInfo", 0);
+		UserId = settings.getString("uid", "No uid");
+		onCampus = settings.getInt("on_campus", 0);
+		if (onCampus == 1){
+			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
+		} else {
+			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
+		}
+		//System.out.println("debug1: " + onCampus);
+		
 		setContentView(R.layout.activity_new_home_screen);
 		blur_layout = (FrameLayout) findViewById(R.id.newScreenFrame);
 		blur_layout.getForeground().setAlpha(0);
 		searchBoxLayout = (LinearLayout) findViewById(R.id.topBarMain);
 		context = getApplicationContext();
-		settings = getSharedPreferences("UserInfo", 0);
-		UserId = settings.getString("uid", "No uid");
+		
 		new MainListCreator(UserId, this);
-
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
 		Width = size.x;
 		Height = size.y;
-
+		
 		/*---------------------------------------------------------- GCM --------------------------------------------*/
-		// mDisplay = (TextView) findViewById(R.id.display);
-
 		// Check device for Play Services APK. If check succeeds, proceed with
 		// GCM registration.
 		if (checkPlayServices()) {
@@ -168,10 +162,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		} else {
 			Log.i(TAG, "No valid Google Play Services APK found.");
 		}
-		/*
-		 * // Print MY ID Toast.makeText(this, regid, Toast.LENGTH_LONG).show();
-		 * Log.v("REGID", regid);
-		 */
 		/*----------------------------------------------- Geofencing status -----------------------------------------*/
 
 		// Set profile picture
@@ -211,12 +201,11 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 							}
 						}
 					}
+					adapter.notifyDataSetChanged();
 				}
 			}
 		});
 	}
-
-
 
 
 	@Override
@@ -262,20 +251,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		GraphRequest request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
 			@Override
 			public void onCompleted(JSONArray friends, GraphResponse graphResponse) {
-				//	System.out.println("getFriendsData onCompleted : jsonArray " + friends);
-				//	System.out.println("getFriendsData onCompleted : response " + graphResponse);
 				try {
-/*
-					friendsList = new ArrayList<ListItem>();
-					for (int i = 0; i < friends.length(); i++) {
-						String id = (String)friends.getJSONObject(i).getString("id");
-						for (int j = 0; j < userData.size(); j++) {
-							if (userData.get(j).uId.compareTo(id) == 0){
-								friendsList.add(userData.get(j));
-							}
-						}
-					}
-*/
 					friendsList = new ArrayList<ListItem>();
 					for (int i = 0; i < userData.size(); i++) {
 						for (int j = 0; j < friends.length(); j++) {
@@ -285,9 +261,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 							}
 						}
 					}
-
-
-
 					userData = friendsList;
 					updatedUserData = new ArrayList<ListItem>(userData);
 					mainContainer = (ListView) findViewById(R.id.mainContainer);
@@ -356,12 +329,11 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	public void onClickUserProfile(View view) {
-		if (GeofencingService.geoStatus == 1 || GeofencingService.geoStatus == 4){
+		onCampus = settings.getInt("on_campus", 0);
+		if (onCampus == 1){
 			Toast.makeText(this, "You Are Currently On Campus",Toast.LENGTH_LONG).show();
-			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
 		} else {
 			Toast.makeText(this, "You Are Currently Not On Campus",Toast.LENGTH_LONG).show();
-			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
 		}
 	}
 
