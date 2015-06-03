@@ -55,7 +55,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 		//geoStatus = -1;
 		geoLatitude = 32.177256142836924;/*idc*////32.16469634171559;*apartment*32.16744820334117;
 		geoLongitude = 34.83560096472502;/*idc*////34.84679650515318;*apartment*34.83503853902221;
-		geoRadius = 5000;
+		geoRadius = 500;
 		geoLocation = new Location("");
 		geoLocation.setLatitude(geoLatitude);
 		geoLocation.setLongitude(geoLongitude);

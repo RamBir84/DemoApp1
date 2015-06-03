@@ -315,14 +315,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 				}
 			}
 
-
-			for (i = 0; i < friendsList.size(); i++) {
-				System.out.println("debug4.1: " + friendsList.get(i).contact_name + ", " + friendsList.get(i).icon_status);
-			}
-			for (i = 0; i < friendsList.size(); i++) {
-				System.out.println("debug4.3: " + userData.get(i).contact_name + ", " + userData.get(i).icon_status);
-			}
-
 			// Show the list on the screen
 			userData = friendsList;
 			updatedUserData = new ArrayList<ListItem>(userData);
@@ -351,10 +343,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 								}
 							}
 						}
-						for (int i = 0; i < friendsList.size(); i++) {
-							System.out.println("debug4.2: " + friendsList.get(i).contact_name + ", " + friendsList.get(i).icon_status);
-						}
-
 
 						editor.putString("IdS", IdS);
 						editor.commit();
