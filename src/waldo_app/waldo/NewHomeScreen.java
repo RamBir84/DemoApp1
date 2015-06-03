@@ -110,13 +110,14 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	String message = "This is a test GCM message!!";
 	private String locationSenderId;
 	private String locationSenderTag;
-	
+
 	int onCampus = 5;
+	GraphRequest request;
 
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		// Start geofencing service
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
@@ -135,21 +136,20 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		} else {
 			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
 		}
-		//System.out.println("debug1: " + onCampus);
-		
+
 		setContentView(R.layout.activity_new_home_screen);
 		blur_layout = (FrameLayout) findViewById(R.id.newScreenFrame);
 		blur_layout.getForeground().setAlpha(0);
 		searchBoxLayout = (LinearLayout) findViewById(R.id.topBarMain);
 		context = getApplicationContext();
-		
+
 		new MainListCreator(UserId, this);
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
 		Width = size.x;
 		Height = size.y;
-		
+
 		/*---------------------------------------------------------- GCM --------------------------------------------*/
 		// Check device for Play Services APK. If check succeeds, proceed with
 		// GCM registration.
@@ -247,35 +247,99 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 
 	public void GetFacebookFriends(){
+		
+		// If the activity starts from notification (from type 'location received')
+		if (settings.getInt("location_received", 0) == 1){
+			// update location_received to 2
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putInt("location_received", 2);
+			editor.commit();
+			
+			ArrayList<String> list_of_ids = new ArrayList<String>();
+			String IdS = settings.getString("IdS", "null");
+			int i = 0;
+			int j = 0;
+			list_of_ids.add("");
+			// insert all the Id'S into arraylist
+			while (i < (IdS.length() - 1)){
+				if (IdS.charAt(i) == ','){
+					i++;
+					j++;
+					if (i < (IdS.length() - 1)){
+						list_of_ids.add("");
+					}
+				} else {
+					list_of_ids.set(j, list_of_ids.get(j) + IdS.charAt(i));
+					i++;
+				}
+			}
 
-		GraphRequest request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
-			@Override
-			public void onCompleted(JSONArray friends, GraphResponse graphResponse) {
-				try {
-					friendsList = new ArrayList<ListItem>();
-					for (int i = 0; i < userData.size(); i++) {
-						for (int j = 0; j < friends.length(); j++) {
-							String id = (String)friends.getJSONObject(j).getString("id");
-							if (userData.get(i).uId.compareTo(id) == 0){
-								friendsList.add(userData.get(i));
+			// update the userData
+			friendsList = new ArrayList<ListItem>();
+			for (i = 0; i < userData.size(); i++) {
+				for (j = 0; j < list_of_ids.size(); j++) {
+					String id = list_of_ids.get(j);
+					if (userData.get(i).uId.compareTo(id) == 0){
+						friendsList.add(userData.get(i));
+					}
+				}
+			}
+			
+			
+			for (i = 0; i < friendsList.size(); i++) {
+				System.out.println("debug4.1: " + friendsList.get(i).contact_name + ", " + friendsList.get(i).icon_status);
+			}
+			
+			// Show the list on the screen
+			userData = friendsList;
+			updatedUserData = new ArrayList<ListItem>(userData);
+			mainContainer = (ListView) findViewById(R.id.mainContainer);
+			baseListAdapter = new MainListAdapter(NewHomeScreen.this, userData);
+			adapter = new MainListAdapter(NewHomeScreen.this, updatedUserData);
+			mainContainer.setAdapter(adapter);
+			usersDataLoaded = !usersDataLoaded;
+
+
+		} else {
+			request = GraphRequest.newMyFriendsRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONArrayCallback() {
+
+				@Override
+				public void onCompleted(JSONArray friends, GraphResponse graphResponse) {
+					try {
+						SharedPreferences.Editor editor = settings.edit();
+						String IdS = "";
+						friendsList = new ArrayList<ListItem>();
+						for (int i = 0; i < userData.size(); i++) {
+							for (int j = 0; j < friends.length(); j++) {
+								String id = (String)friends.getJSONObject(j).getString("id");
+								if (userData.get(i).uId.compareTo(id) == 0){
+									friendsList.add(userData.get(i));
+									IdS += id + ",";
+								}
 							}
 						}
-					}
-					userData = friendsList;
-					updatedUserData = new ArrayList<ListItem>(userData);
-					mainContainer = (ListView) findViewById(R.id.mainContainer);
-					baseListAdapter = new MainListAdapter(NewHomeScreen.this, userData);
-					adapter = new MainListAdapter(NewHomeScreen.this, updatedUserData);
-					mainContainer.setAdapter(adapter);
-					myAdapter = adapter;
-					usersDataLoaded = !usersDataLoaded;
+						for (int i = 0; i < friendsList.size(); i++) {
+							System.out.println("debug4.2: " + friendsList.get(i).contact_name + ", " + friendsList.get(i).icon_status);
+						}
+						
+						editor.putString("IdS", IdS);
+						editor.commit();
+						userData = friendsList;
+						updatedUserData = new ArrayList<ListItem>(userData);
+						mainContainer = (ListView) findViewById(R.id.mainContainer);
+						baseListAdapter = new MainListAdapter(NewHomeScreen.this, userData);
+						adapter = new MainListAdapter(NewHomeScreen.this, updatedUserData);
+						mainContainer.setAdapter(adapter);
+						//myAdapter = adapter;
+						usersDataLoaded = !usersDataLoaded;
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}   	
-			}
-		});
-		request.executeAsync();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}   	
+				}
+			});
+			request.executeAsync();
+		}
 	}
 
 
@@ -307,6 +371,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}
 		userData = listOfUsers;
 		GetFacebookFriends();
+		System.out.println("debug3: 3");
 	}
 
 	@Override
@@ -316,9 +381,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		finish();
 	}
 
-	public void NotifyDataChanged() {
-		myAdapter.notifyDataSetChanged();
-	}
 
 	// Menu Button
 	public void onClickMenu(View view) {
@@ -369,13 +431,13 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			view.setId(2);
 			sendGcmLocationRquest();
 			MainListAdapter.items.get(position).icon_status = IconStatus.request_sent;
-			myAdapter.notifyDataSetChanged();
+			adapter.notifyDataSetChanged();
 			break;
 
 		case 2:// Request_sent
 			Toast.makeText(this, "Location request was already sent",
 					Toast.LENGTH_SHORT).show();
-			myAdapter.notifyDataSetChanged();
+			adapter.notifyDataSetChanged();
 			break;
 
 		case 3:// Request_received
@@ -385,7 +447,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			view.setSelected(true);
 			view.setId(1);
 			MainListAdapter.items.get(position).icon_status = IconStatus.online;
-			myAdapter.notifyDataSetChanged();
+			adapter.notifyDataSetChanged();
 			break;
 
 		case 4:// Answer_received
@@ -393,7 +455,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			view.setId(1);
 			initiatePopupWindow(view);
 			MainListAdapter.items.get(position).icon_status = IconStatus.online;
-			myAdapter.notifyDataSetChanged();
+			adapter.notifyDataSetChanged();
 			break;
 
 		default:// Offline
@@ -435,11 +497,11 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		TextView contactName = (TextView) layout
 				.findViewById(R.id.answer_contact_name);
 		contactName.setText(MainListAdapter.items.get(position).contact_name);
-
+		/*
 		// Set date and date
-		TextView contactDate = (TextView) layout
-				.findViewById(R.id.answer_location_time);
+		TextView contactDate = (TextView) layout.findViewById(R.id.answer_location_time);
 		contactDate.setText(MainListAdapter.items.get(position).tagDateTime);
+		 */	
 		/*
 		 * // Set status message TextView contactStatus = (TextView)
 		 * layout.findViewById(R.id.answer_status); if (view.getId() == 5) {
@@ -706,7 +768,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}
 		return false;
 	}
-
+	/*
 	private class ExtendedTarget implements Target {
 		CircleImageView refButton;
 
@@ -732,5 +794,5 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		public void onPrepareLoad(Drawable arg0) {
 		}
 	}
-
+	 */
 }

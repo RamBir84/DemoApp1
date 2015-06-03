@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -18,6 +19,7 @@ public class GcmIntentService extends IntentService {
 	public static int NOTIFICATION_ID = 1;
 	private NotificationManager mNotificationManager;
 	NotificationCompat.Builder builder;
+	public SharedPreferences settings = null;
 
 	public GcmIntentService() {
 		super("GcmIntentService");
@@ -105,7 +107,6 @@ public class GcmIntentService extends IntentService {
 
 	
 	private void notification(char type, String id, String name, String tag) {
-		System.out.println(":3");
 		
 		mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 		
@@ -127,6 +128,10 @@ public class GcmIntentService extends IntentService {
 					.setAutoCancel(true);
 			
 		} else { // If from type 2 (location Received)
+			settings = getSharedPreferences("UserInfo", 0);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.putInt("location_received", 1);
+			editor.commit();
 			
 			Intent intentForNotification = new Intent(this, NewHomeScreen.class);
 			intentForNotification.putExtra("user_id", id);

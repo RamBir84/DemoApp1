@@ -112,6 +112,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.32"
                 android:gravity="center_vertical"
+                android:onClick="onClickUserProfile"
                 android:orientation="vertical" >
 
                 <!-- android:onClick="onClickMenu" -->
@@ -121,7 +122,6 @@
                     android:layout_width="52dp"
                     android:layout_height="52dp"
                     android:layout_centerInParent="true"
-                    android:onClick="onClickUserProfile"
                     app:border_width="2dp" />
 
                 <!--
