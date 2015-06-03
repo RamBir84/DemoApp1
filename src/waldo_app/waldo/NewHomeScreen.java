@@ -118,6 +118,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		Log.d("NHS_flow", "onCreate");
+
 		// Start geofencing service
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
@@ -144,6 +146,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		context = getApplicationContext();
 
 		new MainListCreator(UserId, this);
+
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
@@ -162,6 +165,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		} else {
 			Log.i(TAG, "No valid Google Play Services APK found.");
 		}
+
 		/*----------------------------------------------- Geofencing status -----------------------------------------*/
 
 		// Set profile picture
@@ -212,6 +216,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	protected void onStart() {
 		super.onStart();
 
+		Log.d("NHS_flow", "onStart");
+
 		// Store our shared preference
 		SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
 		Editor ed = sp.edit();
@@ -224,6 +230,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	protected void onStop() {
 		super.onStop();
 
+		Log.d("NHS_flow", "onStop");
+
 		// Store our shared preference
 		SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
 		Editor ed = sp.edit();
@@ -232,29 +240,51 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.d("NHS_flow", "onDestroy");
+	}
 
 	@Override
 	protected void onNewIntent(Intent intent) {
 		// TODO Auto-generated method stub
 		super.onNewIntent(intent);
+		Log.d("NHS_flow", "onNewIntent");
 		//targetID = intent.getExtras().getString("gcm_id");
 
 		if (intent.getExtras() != null){
 			locationSenderId = intent.getExtras().getString("user_id");	
 			locationSenderTag = intent.getExtras().getString("tag");
 		}
+
+		setIntent(intent);
+	}
+
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		Log.d("NHS_flow", "onResume");
+
+		if (getIntent().getExtras() != null) {
+			locationSenderId = getIntent().getExtras().getString("user_id");
+			locationSenderTag = getIntent().getExtras().getString("tag");
+		}
+		new MainListCreator(UserId, this);
 	}
 
 
 	public void GetFacebookFriends(){
-		
+
 		// If the activity starts from notification (from type 'location received')
 		if (settings.getInt("location_received", 0) == 1){
 			// update location_received to 2
 			SharedPreferences.Editor editor = settings.edit();
 			editor.putInt("location_received", 2);
 			editor.commit();
-			
+
 			ArrayList<String> list_of_ids = new ArrayList<String>();
 			String IdS = settings.getString("IdS", "null");
 			int i = 0;
@@ -284,12 +314,15 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 					}
 				}
 			}
-			
-			
+
+
 			for (i = 0; i < friendsList.size(); i++) {
 				System.out.println("debug4.1: " + friendsList.get(i).contact_name + ", " + friendsList.get(i).icon_status);
 			}
-			
+			for (i = 0; i < friendsList.size(); i++) {
+				System.out.println("debug4.3: " + userData.get(i).contact_name + ", " + userData.get(i).icon_status);
+			}
+
 			// Show the list on the screen
 			userData = friendsList;
 			updatedUserData = new ArrayList<ListItem>(userData);
@@ -321,7 +354,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 						for (int i = 0; i < friendsList.size(); i++) {
 							System.out.println("debug4.2: " + friendsList.get(i).contact_name + ", " + friendsList.get(i).icon_status);
 						}
-						
+
+
 						editor.putString("IdS", IdS);
 						editor.commit();
 						userData = friendsList;
@@ -704,10 +738,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
 
 	/**
 	 * @return Application's version code from the {@code PackageManager}.

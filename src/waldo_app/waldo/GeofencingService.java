@@ -50,6 +50,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	/** Called when the service is being created. */
 	@Override
 	public void onCreate() {
+		// Toast.makeText(this, "Service created", Toast.LENGTH_SHORT).show();
 		mGoogleClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();		
 		//geoStatus = -1;
 		geoLatitude = 32.177256142836924;/*idc*////32.16469634171559;*apartment*32.16744820334117;
@@ -83,6 +84,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	@Override
 	public boolean onUnbind(Intent intent) {
 		sendCheckInToServer(settings.getString("uid", "No uid"), false);
+		//Toast.makeText(this, "Service onUnbind", Toast.LENGTH_SHORT).show();
 		return mAllowRebind;
 	}
 
@@ -114,7 +116,6 @@ public void onTaskRemoved(Intent rootIntent) {
 
 /**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
 		if (!checkLocationServices()) return;
-	//	checkLocationServices(null);
 		
 		/* update user location */
 		userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
