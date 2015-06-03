@@ -117,6 +117,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		Log.d("NHS_flow", "onCreate");
+		
 		// Start geofencing service
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
@@ -144,6 +146,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		context = getApplicationContext();
 		
 		new MainListCreator(UserId, this);
+		
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
@@ -162,6 +165,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		} else {
 			Log.i(TAG, "No valid Google Play Services APK found.");
 		}
+		
 		/*----------------------------------------------- Geofencing status -----------------------------------------*/
 
 		// Set profile picture
@@ -211,7 +215,9 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	@Override
 	protected void onStart() {
 		super.onStart();
-
+		
+		Log.d("NHS_flow", "onStart");
+		
 		// Store our shared preference
 		SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
 		Editor ed = sp.edit();
@@ -223,7 +229,9 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	@Override
 	protected void onStop() {
 		super.onStop();
-
+		
+		Log.d("NHS_flow", "onStop");
+		
 		// Store our shared preference
 		SharedPreferences sp = getSharedPreferences("OURINFO", MODE_PRIVATE);
 		Editor ed = sp.edit();
@@ -232,19 +240,41 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.d("NHS_flow", "onDestroy");
+	}
 
 	@Override
 	protected void onNewIntent(Intent intent) {
 		// TODO Auto-generated method stub
 		super.onNewIntent(intent);
+		Log.d("NHS_flow", "onNewIntent");
 		//targetID = intent.getExtras().getString("gcm_id");
 
 		if (intent.getExtras() != null){
 			locationSenderId = intent.getExtras().getString("user_id");	
 			locationSenderTag = intent.getExtras().getString("tag");
 		}
+		
+		setIntent(intent);
 	}
 
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		Log.d("NHS_flow", "onResume");
+		
+		if (getIntent().getExtras() != null) {
+			locationSenderId = getIntent().getExtras().getString("user_id");
+			locationSenderTag = getIntent().getExtras().getString("tag");
+		}
+		new MainListCreator(UserId, this);
+	}
+	
 
 	public void GetFacebookFriends(){
 
@@ -261,11 +291,11 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 							}
 						}
 					}
-					userData = friendsList;
-					updatedUserData = new ArrayList<ListItem>(userData);
+					//userData = friendsList;
+					//updatedUserData = new ArrayList<ListItem>(userData);
 					mainContainer = (ListView) findViewById(R.id.mainContainer);
-					baseListAdapter = new MainListAdapter(NewHomeScreen.this, userData);
-					adapter = new MainListAdapter(NewHomeScreen.this, updatedUserData);
+					//baseListAdapter = new MainListAdapter(NewHomeScreen.this, userData);
+					adapter = new MainListAdapter(NewHomeScreen.this, friendsList);
 					mainContainer.setAdapter(adapter);
 					myAdapter = adapter;
 					usersDataLoaded = !usersDataLoaded;
@@ -642,10 +672,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
 
 	/**
 	 * @return Application's version code from the {@code PackageManager}.

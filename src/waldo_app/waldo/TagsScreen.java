@@ -162,7 +162,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 		// Toast.makeText(this, "Open menu(Tag)", Toast.LENGTH_SHORT).show();
 	}
 
-	// Search Button
+	// Add New Tag Button
 	public void onClickAdd(final View view) {
 		initiatePopupWindow();
 	}

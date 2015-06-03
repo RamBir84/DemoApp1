@@ -1,5 +1,6 @@
 package waldo_app.waldo;
 
+import android.R.string;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -49,9 +50,15 @@ public class GcmIntentService extends IntentService {
 				if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 				
 					System.out.println(":1");
-				// Post notification of received message.
-				sendNotification(extras.getString("message"));
-				Log.i(HomeScreen.TAG, "Received: " + extras.toString());
+					
+					String gcmMsg = extras.getString("message");
+					if (gcmMsg == null) {
+						return;
+					}
+					
+					// Post notification of received message.
+					sendNotification(gcmMsg);
+					Log.i(HomeScreen.TAG, "Received: " + extras.toString());
 			}
 		}
 		// Release the wake lock provided by the WakefulBroadcastReceiver.

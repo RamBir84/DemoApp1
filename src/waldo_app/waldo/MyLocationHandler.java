@@ -40,12 +40,15 @@ public class MyLocationHandler extends IntentService implements ServerAsyncParen
 		if ((GeofencingService.geoStatus == 1) || (GeofencingService.geoStatus == 4)) {
 			
 			this.sendCheckInToServer(settings.getString("uid", "no uid"), onCampus);
-			//Toast.makeText(this, "AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
 			Log.v("Geo_handler", "AUTO : You are inside the IDC");
 			editor.putInt("on_campus", 1);
 		} else if (GeofencingService.geoStatus == 2) {
 			editor.putInt("on_campus", 2);
 			this.sendCheckInToServer(settings.getString("uid", "no uid"), !onCampus);
+			
+			
+			Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
 			Log.v("Geo_handler", "AUTO : You are outside the IDC");
 			
 		} else {
