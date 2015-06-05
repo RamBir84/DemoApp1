@@ -35,6 +35,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	static Location userLocation;
 	private Location geoLocation;
 	private float distance;
+	// variables: 1) on_campus: 1 - on campus, 2 - off campus, 3 - on campus(invisble mode), 4 - off campus(invisble mode)
 	static SharedPreferences settings; 
 	public static boolean onCampus;
 
@@ -66,7 +67,7 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 	public void printStatus(){
 		System.out.println(geoStatus);
 	}
-	
+
 	/** The service is starting, due to a call to startService() */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -94,58 +95,62 @@ GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.Loca
 
 	}
 
-   /** Called when The service is no longer used and is being destroyed */
-   @Override
-   public void onDestroy() {
-	   super.onDestroy();
-	   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-	   SharedPreferences.Editor editor = settings.edit();
-	   editor.putInt("on_campus", 2);
-	   editor.commit();
-	   
-   }
-   
-   @Override
-public void onTaskRemoved(Intent rootIntent) {
-	super.onTaskRemoved(rootIntent);
-}
+	/** Called when The service is no longer used and is being destroyed */
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		sendCheckInToServer(settings.getString("uid", "No uid"), false);
+		SharedPreferences.Editor editor = settings.edit();
+		if (settings.getInt("on_campus", 0) != 3 && settings.getInt("on_campus", 0) != 4){
+			editor.putInt("on_campus", 2);
+		} else {
+			editor.putInt("on_campus", 4);
+		}
+		editor.commit();
+
+	}
+
+	@Override
+	public void onTaskRemoved(Intent rootIntent) {
+		super.onTaskRemoved(rootIntent);
+	}
 
 	@Override
 	public void onConnected(Bundle arg0) {
-    	SharedPreferences.Editor editor = settings.edit();
+		SharedPreferences.Editor editor = settings.edit();
 
-/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
+		/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
 		if (!checkLocationServices()) return;
-		
+
 		/* update user location */
 		userLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleClient);
-		
+
 		/* update the distance between userLocation and geoLocation */
 		distance = userLocation.distanceTo(geoLocation);
-/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
+		/**---------------------------------------Need too fix location services BUG-------------------------------------------------**/
 
 		/* start listening to location updates this is suitable for foreground listening, with the onLocationChanged() invoked for location updates */
-		
-//		LocationRequest locationRequest = LocationRequest.create()
-//				.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)/*priority - couple of options (have to choose the best one)*/
-//				.setFastestInterval(5000L) // read
-//				.setInterval(10000L) // read
-//				.setSmallestDisplacement(75.0F); // read
+
+		//		LocationRequest locationRequest = LocationRequest.create()
+		//				.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)/*priority - couple of options (have to choose the best one)*/
+		//				.setFastestInterval(5000L) // read
+		//				.setInterval(10000L) // read
+		//				.setSmallestDisplacement(75.0F); // read
 
 		/* activate the requestloactionpdates that activate the method onloactionchanged of the locationlistner that we passed to it */
-//		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleClient, locationRequest, this);
+		//		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleClient, locationRequest, this);
 
 		/*-------------------- The actual geofence action -----------------*/
 		ArrayList<Geofence> geofences = new ArrayList<Geofence>();
-		
+
 		geofences.add(new Geofence.Builder()
-						.setExpirationDuration(Geofence.NEVER_EXPIRE)
-						.setRequestId("unique-geofence-id")
-						.setCircularRegion(geoLatitude, geoLongitude, geoRadius)/*coordinate and radius in meters*/ 
-						.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
-						.setLoiteringDelay(1800000) //1800000 check every 30 minutes (1000 = 1 sec)
-						.build());
-		
+		.setExpirationDuration(Geofence.NEVER_EXPIRE)
+		.setRequestId("unique-geofence-id")
+		.setCircularRegion(geoLatitude, geoLongitude, geoRadius)/*coordinate and radius in meters*/ 
+		.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL | Geofence.GEOFENCE_TRANSITION_EXIT)
+		.setLoiteringDelay(5000) //1800000 check every 30 minutes (1000 = 1 sec)
+		.build());
+
 		/*--------------------- same as above - with the pendingintent ----------------------*/
 		PendingIntent pendingIntent = PendingIntent.getService(this, 0, new Intent(this, MyLocationHandler.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -153,35 +158,45 @@ public void onTaskRemoved(Intent rootIntent) {
 
 		/* update the geofence status */
 		if (distance < geoRadius){
-			System.out.println("on campus status 1");
 			geoStatus = 1;
 			sendCheckInToServer(settings.getString("uid", "No uid"), onCampus);
 			//Toast.makeText(this,"AUTO : You are inside the IDC", Toast.LENGTH_SHORT).show();
 			Log.v("Geo_servis", "AUTO : You are inside the IDC");
-			editor.putInt("on_campus", 1);
+			if (settings.getInt("on_campus", 0) != 3 && settings.getInt("on_campus", 0) != 4){
+				editor.putInt("on_campus", 1);
+			} else {
+				editor.putInt("on_campus", 3);
+			}
 		} else {
-			System.out.println("on campus status 2");
 			geoStatus = 2;
 			sendCheckInToServer(settings.getString("uid", "No uid"), !onCampus);
 			//Toast.makeText(this, "AUTO : You are outside the IDC", Toast.LENGTH_SHORT).show();
 			Log.v("Geo_servis", "AUTO : You are outside the IDC");
-			editor.putInt("on_campus", 2);
+			if (settings.getInt("on_campus", 0) != 3 && settings.getInt("on_campus", 0) != 4){
+				editor.putInt("on_campus", 2);
+			} else {
+				editor.putInt("on_campus", 4);
+			}
 		}	
 		editor.commit();
 	}
 
 	@Override
 	public void onConnectionSuspended(int arg0) {
-		   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-		   SharedPreferences.Editor editor = settings.edit();
-		   editor.putInt("on_campus", 2);
-		   editor.commit();
+		sendCheckInToServer(settings.getString("uid", "No uid"), false);
+		SharedPreferences.Editor editor = settings.edit();
+		if (settings.getInt("on_campus", 0) != 3 && settings.getInt("on_campus", 0) != 4){
+			editor.putInt("on_campus", 2);
+		} else {
+			editor.putInt("on_campus", 4);
+		}
+		editor.commit();
 	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {	
-		   sendCheckInToServer(settings.getString("uid", "No uid"), false);
-	//		 Toast.makeText(this, "Service failed", Toast.LENGTH_SHORT).show();
+		sendCheckInToServer(settings.getString("uid", "No uid"), false);
+		//		 Toast.makeText(this, "Service failed", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -220,7 +235,7 @@ public void onTaskRemoved(Intent rootIntent) {
 			Log.e("geoServisUpdateException", jObj.toString() + e.toString());
 		}
 	}
-	
+
 	public boolean checkLocationServices() {
 		LocationAvailability locAval = LocationServices.FusedLocationApi
 				.getLocationAvailability(mGoogleClient);

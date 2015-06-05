@@ -5,19 +5,18 @@
     android:id="@+id/newScreenFrame"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:foreground="@drawable/bg_blur"
+    android:foreground="@color/transparent"
     android:orientation="vertical"
     android:weightSum="100" >
 
+    <!-- Top bar in search mode -->
+
     <LinearLayout
-        android:id="@+id/mainSearchMode"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         android:orientation="vertical"
         android:weightSum="100" >
-
-        <!-- Top bar in search mode -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,6 +74,98 @@
                     android:background="@drawable/icon_bg"
                     android:duplicateParentState="true"
                     android:src="@drawable/ic_exit_button" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Invisible mode -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:weightSum="100" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="89.74"
+            android:background="@drawable/bcg_screen_color"
+            android:orientation="vertical"
+            android:weightSum="100" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="20"
+                android:orientation="horizontal"
+                android:weightSum="100" >
+            </LinearLayout>
+
+            <!-- Title -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="12"
+                android:orientation="horizontal"
+                android:weightSum="100" >
+
+                <TextView
+                    style="@style/listHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center|bottom"
+                    android:text="You&apos;re Invisible"
+                    android:textColor="@color/orange"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
+            <!-- Text line -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="6"
+                android:orientation="horizontal"
+                android:weightSum="100" >
+
+                <TextView
+                    style="@style/listHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Become visible and find your friends with Waldo"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- User profile picture -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="22"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="100" >
+
+                <waldo_app.waldo.infrastructure.CircleImageView
+                    android:id="@+id/user_profile_invisible_mode"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
+                    android:onClick="onClickUserProfileInvisibleMode"
+                    android:layout_centerInParent="true"
+                    app:border_width="2dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="40"
+                android:orientation="horizontal"
+                android:weightSum="100" >
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -159,7 +250,7 @@
                 android:gravity="bottom"
                 android:orientation="vertical"
                 android:weightSum="100" >
-
+<!--  
                 <TextView
                     style="@style/listHeader"
                     android:layout_width="match_parent"
@@ -169,6 +260,7 @@
                     android:text="Beta"
                     android:textColor="@color/orange"
                     android:textSize="9sp" />
+                    -->
             </LinearLayout>
 
             <!-- search button -->
@@ -201,6 +293,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/bottomMainLayout"
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="89.74"

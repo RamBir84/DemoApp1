@@ -67,7 +67,7 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 
 			// Set the contact icon
 			ImageButton searchIcon = (ImageButton) rowView.findViewById(R.id.listIconImage);
-			Drawable IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_offline);
+			Drawable IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_invisible_waldo);
 			searchIcon.setTag(loadtarget.refButton.getTag());
 			searchIcon.setTag(new BitmapPosition(null, position));
 				// Set the position and ID for onClickListIcon method
@@ -93,7 +93,7 @@ public class MainListAdapter extends ArrayAdapter<ListItem> {
 				searchIcon.setId(4);
 				break;
 			default:
-				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_icon_offline);
+				IconImageAsDrawable = context.getResources().getDrawable(R.drawable.ic_invisible_waldo);
 				searchIcon.setId(5);
 				contactName.setTextColor(color.medium_grey);
 				Location.setText(null);

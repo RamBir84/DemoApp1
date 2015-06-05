@@ -33,6 +33,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -61,14 +62,17 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.location.LocationServices;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Picasso.LoadedFrom;
 
 
 
-public class NewHomeScreen extends Activity implements ServerAsyncParent {
+public class NewHomeScreen extends Activity implements ServerAsyncParent, GoogleApiClient.ConnectionCallbacks,
+GoogleApiClient.OnConnectionFailedListener {
 	// Design fields
 	private ListView mainContainer;
 	ImageButton btnClosePopup;
@@ -76,7 +80,8 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	public int position, textLength;
 	FrameLayout blur_layout;
 	ArrayList<ListItem> userData, updatedUserData, friendsList;
-	LinearLayout searchBoxLayout;
+	LinearLayout searchBoxLayout, InvisbleLayout, VisbleLayout, visibleButton, invisibleButton;
+	CircleImageView userProfile, userProfileInvisibleMode;
 	EditText searchBox;
 	ListAdapter baseListAdapter;
 	public MainListAdapter myAdapter;
@@ -113,6 +118,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	int onCampus = 5;
 	GraphRequest request;
+	String fb_url;
 
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -132,12 +138,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		// Set the activity, search box, blur, and border color
 		settings = getSharedPreferences("UserInfo", 0);
 		UserId = settings.getString("uid", "No uid");
-		onCampus = settings.getInt("on_campus", 0);
-		if (onCampus == 1){
-			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#66CD00");
-		} else {
-			CircleImageView.DEFAULT_BORDER_COLOR = Color.parseColor("#CC3232");
-		}
+
 
 		setContentView(R.layout.activity_new_home_screen);
 		blur_layout = (FrameLayout) findViewById(R.id.newScreenFrame);
@@ -152,6 +153,11 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		display.getSize(size);
 		Width = size.x;
 		Height = size.y;
+
+		VisbleLayout = (LinearLayout) findViewById(R.id.bottomMainLayout);
+		if (settings.getInt("main_layout_status", 0) == 1){
+			VisbleLayout.setVisibility(View.INVISIBLE);
+		}
 
 		/*---------------------------------------------------------- GCM --------------------------------------------*/
 		// Check device for Play Services APK. If check succeeds, proceed with
@@ -169,10 +175,19 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		/*----------------------------------------------- Geofencing status -----------------------------------------*/
 
 		// Set profile picture
+		fb_url = "https://graph.facebook.com/" + UserId + "/picture?type=large";
+		userProfile = (CircleImageView) findViewById(R.id.user_profile);
+		userProfileInvisibleMode = (CircleImageView) findViewById(R.id.user_profile_invisible_mode);
 
-		String fb_url = "https://graph.facebook.com/" + UserId + "/picture?type=large";
-		CircleImageView userProfile = (CircleImageView) findViewById(R.id.user_profile);
+		onCampus = settings.getInt("on_campus", 0);
+		if (onCampus == 1){
+			userProfile.setBorderColor(Color.parseColor("#66CD00"));
+		} else {
+			userProfile.setBorderColor(Color.parseColor("#CC3232"));
+		}
+
 		Picasso.with(context).load(fb_url).into(userProfile);
+		Picasso.with(context).load(fb_url).into(userProfileInvisibleMode);
 
 		/*----------------------------------------- Handling search mode --------------------------------------------*/
 		textLength = 0;
@@ -413,12 +428,21 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 	}
 
 	public void onClickUserProfile(View view) {
+		/*
 		onCampus = settings.getInt("on_campus", 0);
+		// Send the relevant toast
 		if (onCampus == 1){
 			Toast.makeText(this, "You Are Currently On Campus",Toast.LENGTH_LONG).show();
 		} else {
-			Toast.makeText(this, "You Are Currently Not On Campus",Toast.LENGTH_LONG).show();
+			if (onCampus == 3 || onCampus == 4){
+				Toast.makeText(this, "You Are Currently Invisible",Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(this, "You Are Currently Not On Campus",Toast.LENGTH_LONG).show();
+			}
 		}
+		startActivity(new Intent(this, TagsScreen.class));
+		 */
+		UserVisibilityPopup(view);
 	}
 
 
@@ -485,7 +509,6 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 					Toast.LENGTH_SHORT).show();
 			break;
 		}
-
 	}
 
 	// ListProfile Button
@@ -493,8 +516,154 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		position = ((BitmapPosition) view.getTag()).position;
 		initiatePopupWindow(view);
 	}
+	
+	public void onClickUserProfileInvisibleMode(View view) {
+		SharedPreferences.Editor editor = settings.edit();
+		onCampus = settings.getInt("on_campus", 0);
+		
+		// change to visible layout
+		VisbleLayout.setVisibility(View.VISIBLE);
 
-	// Profile popup
+		// Update the 'on_campus' field for visible mode(1 or 2) according to the user real status
+		if (onCampus == 3){
+			editor.putInt("on_campus", 1);
+			userProfile.setBorderColor(Color.parseColor("#66CD00"));
+			Picasso.with(context).load(fb_url).into(userProfile);
+		} else {
+			editor.putInt("on_campus", 2);
+		}
+
+		// change layout status to invisible(0)
+		editor.putInt("main_layout_status", 0); 
+		editor.commit();
+	}
+	
+	
+	
+
+
+	// User Visibility Popup
+	private void UserVisibilityPopup(View view) {
+
+		// We need to get the instance of the LayoutInflater
+		LayoutInflater inflater = (LayoutInflater) NewHomeScreen.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View layout = inflater.inflate(R.layout.activity_user_visibility_popup, (ViewGroup) findViewById(R.id.user_visibility_popup));
+		pwindo = new PopupWindow(layout, (int)(NewHomeScreen.Width/1.8), (int)(NewHomeScreen.Height/7), false);
+
+		pwindo.showAtLocation(layout, Gravity.CENTER, (int)(NewHomeScreen.Width/8)*(-1), (int)(NewHomeScreen.Height/2.6)*(-1));
+		btnClosePopup = (ImageButton) layout.findViewById(R.id.btn_close_visibility_popup);
+		btnClosePopup.setOnClickListener(cancel_user_visibility_click_listener);
+		visibleButton = (LinearLayout) layout.findViewById(R.id.visible_button);
+		visibleButton.setOnClickListener(visible_button_click_listener);
+		invisibleButton = (LinearLayout) layout.findViewById(R.id.invisible_button);
+		invisibleButton.setOnClickListener(invisible_button_click_listener);
+		
+		// If visible
+		if (settings.getInt("main_layout_status", 4) == 1){
+			
+		    TextView text = (TextView) layout.findViewById(R.id.text_view_visible);
+		    text.setTextColor(Color.parseColor("#ededed"));
+		    
+		    ImageView image = (ImageView) layout.findViewById(R.id.image_view_visible);
+		    Drawable drawable = context.getResources().getDrawable(R.drawable.ic_waldo_semi_green);
+		    image.setImageDrawable(drawable);
+		}
+		// If invisible
+		else {
+			
+		    TextView text = (TextView) layout.findViewById(R.id.text_view_invisible);
+		    text.setTextColor(Color.parseColor("#ededed"));
+		    
+		    ImageView image = (ImageView) layout.findViewById(R.id.image_view_invisible);
+		    Drawable drawable = context.getResources().getDrawable(R.drawable.ic_waldo_semi_red);
+		    image.setImageDrawable(drawable);
+		}
+
+		// blur background and disable layout
+		blur_layout.getForeground().setAlpha(150);
+		pwindo.setFocusable(true);
+		pwindo.update();
+
+	}
+
+	// Exit popup button
+	private OnClickListener cancel_user_visibility_click_listener = new OnClickListener() {
+		public void onClick(View v) {
+			// restore blur and enable layout
+			blur_layout.getForeground().setAlpha(0);
+			pwindo.showAsDropDown((View) v.getParent());
+			pwindo.dismiss();
+		}
+	};
+
+	// Visible button
+	private OnClickListener visible_button_click_listener = new OnClickListener() {
+		public void onClick(View v) {
+			// If we are not already in visible mode - change to visible
+		//	if (settings.getInt("main_layout_status", 4) != 0){
+
+				SharedPreferences.Editor editor = settings.edit();
+				onCampus = settings.getInt("on_campus", 0);
+
+				// change to visible layout
+				VisbleLayout.setVisibility(View.VISIBLE);
+
+				// Update the 'on_campus' field for visible mode(1 or 2) according to the user real status
+				if (onCampus == 3){
+					editor.putInt("on_campus", 1);
+					userProfile.setBorderColor(Color.parseColor("#66CD00"));
+					Picasso.with(context).load(fb_url).into(userProfile);
+				} else {
+					editor.putInt("on_campus", 2);
+				}
+
+				// change layout status to invisible(0)
+				editor.putInt("main_layout_status", 0); 
+				editor.commit();
+	//		}
+
+			// restore blur and enable layout
+			blur_layout.getForeground().setAlpha(0);
+			pwindo.showAsDropDown((View) v.getParent());
+			pwindo.dismiss();
+		}
+	};
+
+	// Invisible button
+	private OnClickListener invisible_button_click_listener = new OnClickListener() {
+		public void onClick(View v) {
+
+			// If we are not already in invisible mode - change to invisible
+		//	if (settings.getInt("main_layout_status", 1) != 0){
+				SharedPreferences.Editor editor = settings.edit();
+				onCampus = settings.getInt("on_campus", 0);
+
+				// change to invisible layout 
+				VisbleLayout.setVisibility(View.INVISIBLE);
+
+				// Update the 'on_campus' field for invisible mode(3 or 4) according to the user real status
+				if (onCampus == 1){
+					editor.putInt("on_campus", 3);
+					userProfile.setBorderColor(Color.parseColor("#CC3232"));
+					Picasso.with(context).load(fb_url).into(userProfile);
+				} else {
+					editor.putInt("on_campus", 4);
+				}
+
+				// change layout status to visible(1)
+				editor.putInt("main_layout_status", 1); 
+				editor.commit();
+	//		}
+
+			// restore blur and enable layout
+			blur_layout.getForeground().setAlpha(0);
+			pwindo.showAsDropDown((View) v.getParent());
+			pwindo.dismiss();
+		}
+	};
+
+
+	// Profile Popup
 	private void initiatePopupWindow(View view) {
 
 		// We need to get the instance of the LayoutInflater
@@ -549,6 +718,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 
 	private OnClickListener cancel_button_click_listener = new OnClickListener() {
 		public void onClick(View v) {
+
 			// restore blur and enable layout
 			blur_layout.getForeground().setAlpha(0);
 			pwindo.dismiss();
@@ -813,4 +983,25 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 		}
 	}
 	 */
+
+
+	@Override
+	public void onConnectionFailed(ConnectionResult result) {
+		// TODO Auto-generated method stub
+
+	}
+
+
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		// TODO Auto-generated method stub
+
+	}
+
+
+	@Override
+	public void onConnectionSuspended(int cause) {
+		// TODO Auto-generated method stub
+
+	}
 }

@@ -2,10 +2,12 @@
 <resources>
     <string-array name="schools">
         <item name="1">IDC Herzliya</item>
+        <!--  
         <item name="2">Tel Aviv University</item>
         <item name="3">Ben Gurion University</item>
         <item name="4">Technion </item>
         <item name="5">Bar Ilan University </item>
+        -->
     </string-array>
     
     <string-array name="updateFrequencyValues">
