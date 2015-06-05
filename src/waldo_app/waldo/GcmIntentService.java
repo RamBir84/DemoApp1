@@ -144,7 +144,7 @@ public class GcmIntentService extends IntentService {
 			intentForNotification.putExtra("user_id", id);
 			intentForNotification.putExtra("tag", tag);			
 			
-			contentIntent = PendingIntent.getActivity(this, 0, intentForNotification, 0);
+			contentIntent = PendingIntent.getActivity(this, 0, intentForNotification, PendingIntent.FLAG_UPDATE_CURRENT);
 			mBuilder = new NotificationCompat.Builder(this)
 					.setSmallIcon(R.drawable.ic_notification) // have to set a new icon here(if we want to)
 					.setContentTitle("Location Received")
