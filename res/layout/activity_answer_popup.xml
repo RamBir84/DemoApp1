@@ -159,8 +159,8 @@
                 style="@style/listHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This is a location message"
                 android:layout_marginTop="7sp"
+                android:text="This is a location message"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
             <!-- Locatin time -->

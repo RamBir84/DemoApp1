@@ -46,5 +46,4 @@ public class TagListAdapter extends ArrayAdapter<ListTagItem> {
 			
 		return rowView;
 	}
-
 }

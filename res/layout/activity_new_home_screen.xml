@@ -113,6 +113,7 @@
                 android:weightSum="100" >
 
                 <TextView
+                    android:id="@+id/title_invisible_mode"
                     style="@style/listHeader"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -122,7 +123,7 @@
                     android:textSize="30sp" />
             </LinearLayout>
 
-            <!-- Text line -->
+            <!-- Subtitle -->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -132,6 +133,7 @@
                 android:weightSum="100" >
 
                 <TextView
+                    android:id="@+id/subtitle_invisible_mode"
                     style="@style/listHeader"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

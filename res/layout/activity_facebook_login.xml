@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:facebook="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
@@ -60,8 +58,8 @@
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="13"
-            android:gravity="center"
             android:background="@color/transparent"
+            android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="100" >
 
@@ -72,36 +70,6 @@
                 android:layout_weight="70"
                 facebook:confirm_logout="false"
                 facebook:tooltip_mode="never_display" />
-<!--  
-            <TextView
-                android:id="@+id/greeting"
-                android:layout_width="0px"
-                android:layout_height="0px"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:textColor="#333"
-                android:textSize="18sp" />
-
-            <com.facebook.login.widget.ProfilePictureView
-                android:id="@+id/profilePicture"
-                android:layout_width="0px"
-                android:layout_height="0px"
-                android:layout_marginBottom="10dp"
-                android:gravity="center_horizontal"
-                facebook:preset_size="normal" />
-
-            <Button
-                android:id="@+id/postStatusUpdateButton"
-                android:layout_width="0px"
-                android:layout_height="0px"
-                android:text="Post Status Update" />
-
-            <Button
-                android:id="@+id/postPhotoButton"
-                android:layout_width="0px"
-                android:layout_height="0px"
-                android:text="Post Photo" />
-                -->
         </LinearLayout>
 
         <LinearLayout

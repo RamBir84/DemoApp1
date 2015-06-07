@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/listItem"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/listItem"
     android:layout_width="match_parent"
     android:layout_height="88dp"
     android:background="@color/white"
@@ -26,20 +26,20 @@
         <LinearLayout
             android:layout_width="0px"
             android:layout_height="match_parent"
-            android:gravity="center"
             android:layout_weight="18"
+            android:gravity="center"
             android:orientation="vertical"
             android:weightSum="100" >
 
-        <waldo_app.waldo.infrastructure.CircleImageView
-            android:id="@+id/listProfileImage"
-            android:layout_width="57dp"
-            android:layout_height="57dp"
-            android:layout_centerInParent="true"
-            app:border_color="@color/black"
-            app:border_width="2dp"
-            android:onClick="onClickListProfile"
-            android:clickable="true" />            
+            <waldo_app.waldo.infrastructure.CircleImageView
+                android:id="@+id/listProfileImage"
+                android:layout_width="57dp"
+                android:layout_height="57dp"
+                android:layout_centerInParent="true"
+                android:clickable="true"
+                android:onClick="onClickListProfile"
+                app:border_color="@color/black"
+                app:border_width="2dp" />
         </LinearLayout>
 
         <View
@@ -51,7 +51,7 @@
         <LinearLayout
             android:layout_width="0px"
             android:layout_height="match_parent"
-             android:layout_weight="56"
+            android:layout_weight="56"
             android:gravity="center_vertical|left"
             android:orientation="vertical" >
 
@@ -75,7 +75,7 @@
         <LinearLayout
             android:layout_width="0px"
             android:layout_height="match_parent"
-             android:layout_weight="20"
+            android:layout_weight="20"
             android:gravity="right|center"
             android:orientation="horizontal"
             android:weightSum="100" >

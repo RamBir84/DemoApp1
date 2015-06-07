@@ -9,6 +9,6 @@ public class GeofencingBroadcastReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Intent startServiceIntent = new Intent(context, GeofencingService.class);
-		 context.startService(startServiceIntent);
+		context.startService(startServiceIntent);
 	}
 }

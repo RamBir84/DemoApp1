@@ -12,16 +12,13 @@ import waldo_app.waldo.NewHomeScreen;
 import waldo_app.waldo.helpers.ServerAsyncParent;
 import waldo_app.waldo.helpers.ServerCommunicator;
 
-
 import android.content.SharedPreferences;
-
-
 
 public class MainListCreator implements ServerAsyncParent {
 
 	SharedPreferences settings = null;
-	ArrayList<ListItem> listOfUsers = new ArrayList<ListItem>();
-	NewHomeScreen parent;
+	private ArrayList<ListItem> listOfUsers = new ArrayList<ListItem>();
+	private NewHomeScreen parent;
 
 	public MainListCreator(String uidList, NewHomeScreen parent) {
 		this.parent = parent;
@@ -29,7 +26,6 @@ public class MainListCreator implements ServerAsyncParent {
 	}
 
 	public void getDataFromServer(String uidList) {
-
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("userId", uidList));
 		new ServerCommunicator(this, params, ServerCommunicator.METHOD_GET)
@@ -43,42 +39,33 @@ public class MainListCreator implements ServerAsyncParent {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void setDataFromServer(JSONArray users) {
 		try {
-			/*
-			SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm", Locale.getDefault());
-			String date = df.format(Calendar.getInstance().getTime());
-			*/
 			// looping through All Users prepare the list of all records
 			for (int i = 0; i < users.length(); i++) {
 				JSONObject row = users.getJSONObject(i);
-				
-				String imgUrl = "https://graph.facebook.com/" + row.getString("id") + "/picture?type=large";
-				String defaultLocation; 
+
+				String imgUrl = "https://graph.facebook.com/" + row.getString("id")
+						+ "/picture?type=large";
+				String defaultLocation;
 				IconStatus userStatus;
-				
-				if (row.getInt("oncampus") == 1){
+
+				if (row.getInt("oncampus") == 1) {
 					userStatus = IconStatus.online;
 					defaultLocation = "On Campus";
-				}else {
+				} else {
 					userStatus = IconStatus.offline;
 					defaultLocation = "Not on Campus";
 				}
-				
-				ListItem newUser = new ListItem(row.getString("name"),
-												defaultLocation,
-												imgUrl,
-												userStatus,
-												row.getString("id"),
-												row.getString("gcm_id"),
-												row.getString("ubdate_date"),
-												row.getString("school"));
+
+				ListItem newUser = new ListItem(row.getString("name"), defaultLocation, imgUrl,
+						userStatus, row.getString("id"), row.getString("gcm_id"),
+						row.getString("ubdate_date"), row.getString("school"));
 				listOfUsers.add(newUser);
 			}
-			
+
 			parent.onDataLoadeFromServer(listOfUsers);
 		} catch (Exception e) {
 			e.printStackTrace();

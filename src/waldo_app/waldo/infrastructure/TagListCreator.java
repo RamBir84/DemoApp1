@@ -12,17 +12,13 @@ import waldo_app.waldo.TagsScreen;
 import waldo_app.waldo.helpers.ServerAsyncParent;
 import waldo_app.waldo.helpers.ServerCommunicator;
 
-
 import android.content.SharedPreferences;
 import android.location.Location;
 
-
-
 public class TagListCreator implements ServerAsyncParent {
-
 	SharedPreferences settings = null;
-	ArrayList<ListTagItem> listOfTags = new ArrayList<ListTagItem>();
-	TagsScreen parent;
+	private ArrayList<ListTagItem> listOfTags = new ArrayList<ListTagItem>();
+	private TagsScreen parent;
 
 	public TagListCreator(Location userLocation, TagsScreen parent) {
 		this.parent = parent;
@@ -30,7 +26,6 @@ public class TagListCreator implements ServerAsyncParent {
 	}
 
 	public void getDataFromServer(Location userLocation) {
-
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		
 		params.add(new BasicNameValuePair("latitude", Double.toString(userLocation.getLatitude())));
@@ -47,12 +42,10 @@ public class TagListCreator implements ServerAsyncParent {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void setDataFromServer(JSONArray tags) {
 		try {
-			
 			// looping through All Users prepare the list of all records
 			for (int i = 0; i < tags.length(); i++) {
 				JSONObject row = tags.getJSONObject(i);
@@ -65,7 +58,6 @@ public class TagListCreator implements ServerAsyncParent {
 				tagLocation.setTime(row.getLong("timestamp"));
 				
 				ListTagItem newTag = new ListTagItem(row.getString("name"), tagLocation);
-				
 				listOfTags.add(newTag);
 			}
 			

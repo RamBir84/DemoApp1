@@ -8,20 +8,21 @@
     android:weightSum="100" >
 
     <!-- Exit button -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal" >
 
         <ImageButton
             android:id="@+id/btn_close_add_Tag"
-            android:contentDescription="@string/add_tag_close_btn"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_gravity="top|start"
             android:background="@color/transparent"
+            android:contentDescription="@string/add_tag_close_btn"
             android:src="@drawable/ic_exit_button_popup" />
     </LinearLayout>
 
@@ -34,6 +35,7 @@
         android:weightSum="100" >
 
         <!-- Text (make your own location) -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
@@ -51,8 +53,9 @@
                 android:textSize="22sp"
                 android:textStyle="bold" />
         </LinearLayout>
-        
+
         <!-- Edit Text -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
@@ -66,13 +69,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                 android:textColorHint="@color/white"
-                android:hint="Where Are You?!" >
+                android:hint="Where Are You?!"
+                android:textColorHint="@color/white" >
             </EditText>
         </LinearLayout>
     </LinearLayout>
 
     <!-- Send tag button -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -83,12 +87,13 @@
 
         <ImageButton
             android:id="@+id/btn_send_tag"
-            android:contentDescription="@string/add_tag_send_btn"
             android:layout_width="120dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_marginTop="20sp"
+            android:contentDescription="@string/add_tag_send_btn"
             android:orientation="horizontal"
             android:src="@drawable/ic_send_tag" />
     </LinearLayout>
+
 </LinearLayout>

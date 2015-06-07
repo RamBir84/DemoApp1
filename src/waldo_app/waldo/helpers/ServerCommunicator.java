@@ -23,9 +23,6 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 	public static final String METHOD_POST = "POST";
 	public static final String METHOD_GET = "GET";
 
-	//private ProgressDialog dialog;
-
-	// URL to update user status
 	private final String method;
 	private List<NameValuePair> requestParams;
 	private InputStream is = null;
@@ -37,7 +34,6 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 
 	public ServerCommunicator(ServerAsyncParent activity, List<NameValuePair> params, String method) {
 		parentActivity = activity;
-		//dialog = new ProgressDialog((Context) parentActivity);
 		this.requestParams = params;
 		this.method = method;
 	}
@@ -45,9 +41,10 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-		/*dialog.setMessage("Sending request to server, please wait...");
-		dialog.show();
-		*/
+		/*
+		 * dialog.setMessage("Sending request to server, please wait...");
+		 * dialog.show();
+		 */
 	}
 
 	@Override
@@ -68,16 +65,16 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 				httpMethod = new HttpGet(url + "?" + paramString);
 			}
 			DefaultHttpClient httpClient = new DefaultHttpClient();
-			//Test print
+			// Test print
 			Log.v("http_to_server", httpMethod.toString());
-			
+
 			// execute
 			httpResponse = httpClient.execute(httpMethod);
 
 			// get response from server and parse it to json
 			HttpEntity httpEntity = httpResponse.getEntity();
 			is = httpEntity.getContent();
-			
+
 			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "utf-8"), 8);
 			StringBuilder sb = new StringBuilder();
 			line = reader.readLine();
@@ -111,16 +108,18 @@ public class ServerCommunicator extends AsyncTask<String, Void, Boolean> {
 
 	@Override
 	protected void onPostExecute(Boolean isRequestSucceeded) {
-		/*if (dialog.isShowing()) {
-			dialog.dismiss();
-		}*/
+		/*
+		 * if (dialog.isShowing()) { dialog.dismiss(); }
+		 */
 		if (isRequestSucceeded) {
 			parentActivity.doOnPostExecute(jObj);
 		} else {
 			CharSequence text = "Send Data Faild!";
-			/*int duration = Toast.LENGTH_LONG;
-			Toast toast = Toast.makeText((Context) parentActivity, text, duration);
-			toast.show();*/
+			/*
+			 * int duration = Toast.LENGTH_LONG; Toast toast =
+			 * Toast.makeText((Context) parentActivity, text, duration);
+			 * toast.show();
+			 */
 			Log.v("Server_Comm", text + "To:" + url + requestParams.toString());
 		}
 	}

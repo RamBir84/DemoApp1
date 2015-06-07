@@ -25,8 +25,8 @@
             android:layout_height="0px"
             android:layout_gravity="center"
             android:layout_weight="49"
-            android:orientation="horizontal"
             android:background="@drawable/icon_bg"
+            android:orientation="horizontal"
             android:weightSum="100" >
 
             <ImageView
@@ -39,10 +39,10 @@
 
             <TextView
                 android:id="@+id/text_view_visible"
+                style="@style/listHeader"
                 android:layout_width="0px"
                 android:layout_height="match_parent"
                 android:layout_weight="70"
-                 style="@style/listHeader"
                 android:gravity="center|left"
                 android:text="Visible"
                 android:textColor="@color/white"
@@ -81,10 +81,10 @@
 
             <TextView
                 android:id="@+id/text_view_invisible"
+                style="@style/listHeader"
                 android:layout_width="0px"
                 android:layout_height="match_parent"
                 android:layout_weight="70"
-                 style="@style/listHeader"
                 android:gravity="center|left"
                 android:text="Invisible"
                 android:textColor="@color/white"
@@ -109,69 +109,5 @@
             android:background="@color/transparent"
             android:src="@drawable/ic_exit_button_popup" />
     </LinearLayout>
-
-    <!--
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/btn_close_add_Tag"
-            android:contentDescription="@string/add_tag_close_btn"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="top|end"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_exit_button_popup" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="79.5"
-        android:orientation="vertical"
-        android:weightSum="100" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_weight="50"
-            android:background="@color/transparent"
-            android:gravity="center|start"
-            android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="Make Your Own Location"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="19.5"
-        android:background="@color/transparent"
-        android:orientation="vertical" >
-
-        <ImageButton
-            android:contentDescription="@string/add_tag_send_btn"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20sp"
-            android:orientation="horizontal"
-            android:src="@drawable/ic_send_tag" />
-    </LinearLayout>
-    -->
 
 </LinearLayout>

@@ -37,7 +37,6 @@
                 android:layout_weight="0.15"
                 android:gravity="center"
                 android:orientation="vertical" >
-                <!-- android:onClick="onClickTagMenu" -->
 
                 <ImageView
                     android:id="@+id/tag_menu_button"
@@ -96,7 +95,7 @@
             android:layout_height="0px"
             android:layout_weight="89.74"
             android:background="@drawable/bcg_screen_color"
-             android:gravity="center"
+            android:gravity="center"
             android:orientation="vertical"
             android:weightSum="100" >
 

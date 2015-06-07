@@ -6,12 +6,10 @@ public class BitmapPosition {
 
 	public Bitmap bitmap;
 	public int position;
-	
-	//Constructor
+
+	// Constructor
 	public BitmapPosition(Bitmap bitmap, int position) {
 		this.bitmap = bitmap;
 		this.position = position;
 	}
 }
-
-
