@@ -47,9 +47,9 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
 	public void onCreate() {
 		mGoogleClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API)
 				.build();
-		geoLatitude = 32.17644339539441;// 32.177256142836924;
-		geoLongitude = 34.835711773484945;// 34.83560096472502;
-		geoRadius = 500;
+		geoLatitude = 32.177256142836924; //32.17644339539441
+		geoLongitude = 34.83560096472502; //34.835711773484945
+		geoRadius = 700;
 		geoLocation = new Location("");
 		geoLocation.setLatitude(geoLatitude);
 		geoLocation.setLongitude(geoLongitude);
@@ -136,7 +136,7 @@ public class GeofencingService extends Service implements GoogleApiClient.Connec
 				/* coordinate and radius in meters */
 				.setTransitionTypes(
 						Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_DWELL
-								| Geofence.GEOFENCE_TRANSITION_EXIT).setLoiteringDelay(5000)
+								| Geofence.GEOFENCE_TRANSITION_EXIT).setLoiteringDelay(1800000)
 				.build());
 
 		/*--------------------- same as above - with the pendingintent ----------------------*/

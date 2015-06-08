@@ -386,7 +386,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 			TextView title = (TextView) findViewById(R.id.title_invisible_mode);
 			title.setText("Welcome to Waldo ");
 			TextView subtitle = (TextView) findViewById(R.id.subtitle_invisible_mode);
-			subtitle.setText("Invite your friends and find them faster with Waldo");
+			subtitle.setText("Invite your friends to find them faster on campus");
 			// change to invisible layout
 			VisbleLayout.setVisibility(View.INVISIBLE);
 		}
@@ -562,7 +562,7 @@ public class NewHomeScreen extends Activity implements ServerAsyncParent {
 				TextView title = (TextView) findViewById(R.id.title_invisible_mode);
 				title.setText("Welcome to Waldo");
 				TextView subtitle = (TextView) findViewById(R.id.subtitle_invisible_mode);
-				subtitle.setText("Invite your friends and find them faster with Waldo");
+				subtitle.setText("Invite your friends to find them faster on campus");
 			}
 
 			// Update the 'on_campus' field for visible mode(1 or 2) according

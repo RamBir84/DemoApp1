@@ -56,7 +56,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 	private PopupWindow pwindo;
 	private FrameLayout blur_layout;
 	private Location userLocation;
-	private ArrayList<ListTagItem> TagsList; // change name!!
+	private ArrayList<ListTagItem> TagsList; 
 	private String targetID, message;
 	private EditText tagEdit;
 	private int position;
