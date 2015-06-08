@@ -21,7 +21,7 @@ import android.widget.Toast;
 public class MyLocationHandler extends IntentService implements ServerAsyncParent {
 
 	private boolean onCampus = true;
-	SharedPreferences settings = GeofencingService.settings;
+	SharedPreferences settings = getSharedPreferences("UserInfo", 0); //GeofencingService.settings;
 
 	public MyLocationHandler() {
 		super("");

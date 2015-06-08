@@ -73,10 +73,10 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 		thisRef = this;
 		blur_layout = (FrameLayout) findViewById(R.id.tagScreenFrame);
 		blur_layout.getForeground().setAlpha(0);
-		mGoogleClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API)
-				.build();
+		
+		mGoogleClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();
 		mGoogleClient.connect();
-
+		
 		// Start geofencing service
 		if (!isMyServiceRunning(GeofencingService.class)) {
 			startService(new Intent(getBaseContext(), GeofencingService.class));
@@ -109,6 +109,8 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 		targetID = intent.getExtras().getString("gcm_id");
+		
+		setIntent(intent);
 	}
 
 	@Override
@@ -118,7 +120,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 		finish();
 	}
 
-	/*---------------------------------------------------------- External methods  --------------------------------------------*/
+	/*----------------------------------------------------- External methods  --------------------------------------------*/
 	private void chooseTagsAndDisplay() {
 		float radius = userLocation.getAccuracy();
 		Location tagLocation;
@@ -234,7 +236,7 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 			String tag = (tagEdit.getText().toString());
 			// Send the tag
 			sendTag(tag, userLocation);
-			Toast.makeText(TagsScreen.this, "The new tag: " + tag + " was swent.",
+			Toast.makeText(TagsScreen.this, "The new tag: " + tag + " was sent.",
 					Toast.LENGTH_SHORT).show();
 			startActivity(new Intent(TagsScreen.this, NewHomeScreen.class));
 			finish();
@@ -389,4 +391,5 @@ public class TagsScreen extends Activity implements ServerAsyncParent,
 	public void onConnectionSuspended(int cause) {
 		// TODO Auto-generated method stub
 	}
+	
 }
