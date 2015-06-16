@@ -246,6 +246,5 @@ proguard/
 
 # Log Files
 *.log
-project.properties
 *.properties
 project.properties
